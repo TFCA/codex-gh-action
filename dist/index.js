@@ -26958,11 +26958,9 @@ async function analyzeCode(parsedDiff, prDetails) {
             const dry_run = core.getInput('dry-run')
             let newComments
             if (dry_run === 'true') {
-                newComments = createComment(
-                    file,
-                    chunk,
+                newComments = createComment(file, chunk, [
                     'Dry run enabled, not commenting'
-                )
+                ])
             } else {
                 const response = await getResponse(prompt)
                 if (response) {
