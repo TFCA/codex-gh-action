@@ -22,9 +22,3 @@ jobs:
                   exclude: 'yarn.lock,dist/**'
                   include: 'src/**'
                   dry-run: false
-            - name: Debug Prompts
-              run: |
-                  echo "${{ steps.review.outputs.prompts }}"
-            - name: Debug Comments
-              run: |
-                  echo "${{ steps.review.outputs.comments }}"

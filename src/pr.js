@@ -81,7 +81,7 @@ async function getClaudeResponse(model, prompt) {
     })
 
     const msg = await anthropic.messages.create({
-        model: 'claude-3-haiku-20240307',
+        model,
         max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }]
     })
@@ -168,6 +168,8 @@ function createPrompt(file, chunk, prDetails) {
 - Write the comment in GitHub Markdown format.
 - Use the given description only for the overall context and only comment the code.
 - IMPORTANT: NEVER suggest adding comments to the code.
+- IMPORTANT: NEVER mention that changes may affect the behaviour. This is obivious.
+- IMPORTANT: Only provide actionable comments. 
 
 Review the following code diff in the file "${
         file.to
