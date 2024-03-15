@@ -85,8 +85,12 @@ async function getClaudeResponse(model, prompt) {
         max_tokens: 1024,
         messages: [{ role: 'assistant', content: prompt }]
     })
-
-    return JSON.parse(msg.content[0].text).reviews
+    core.setOutput('claude-response', msg)
+    try {
+        return JSON.parse(msg.content[0].text).reviews
+    } catch (e) {
+        throw new Error(`${e.message}\n---\n${msg}`)
+    }
 }
 
 async function getGptResponse(model, prompt) {

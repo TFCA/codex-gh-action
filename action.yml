@@ -16,7 +16,7 @@ inputs:
     LLM_MODEL:
         description: 'OpenAI API model.'
         required: false
-        default: 'gpt-4'
+        default: 'gpt-4-1106-preview'
     exclude:
         description: 'Glob patterns to exclude files from the diff analysis'
         required: false
