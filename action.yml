@@ -4,14 +4,37 @@ author: 'Squad-C'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  GITHUB_TOKEN:
+    description: "GitHub token to interact with the repository."
     required: true
-    default: '1000'
+  OPENAI_API_KEY:
+    description: "OpenAI API key for GPT."
+    required: false
+  CLAUDE_API_KEY:
+    description: "Claude API Key."
+    required: false
+  LLM_MODEL:
+    description: "OpenAI API model."
+    required: false
+    default: "gpt-4"
+  exclude:
+    description: "Glob patterns to exclude files from the diff analysis"
+    required: false
+    default: ""
+  include:
+    description: "Glob patterns to include files from the diff analysis"
+    required: false
+    default: "**/**"
+  dry-run:
+    description: "Run the action in dry-run mode."
+    required: false
+    default: false
 
 # Define your outputs here.
 outputs:
-  time:
+  comments:
+    description: 'Your output description here'
+  diff:
     description: 'Your output description here'
 
 runs:

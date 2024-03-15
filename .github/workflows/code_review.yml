@@ -1,0 +1,26 @@
+name: Automatic LLM Code Review
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+permissions: write-all
+jobs:
+  code_review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Code Review
+        id: review
+        uses: ./
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          LLM_MODEL: "gpt-4-1106-preview"
+          exclude: "yarn.lock,dist/**"
+          dry-run: true
+      - name: Debug
+        run: echo "${{ steps.review.outputs.time }}"
+
