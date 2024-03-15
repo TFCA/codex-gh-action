@@ -7144,7 +7144,6 @@ function wrappy (fn, cb) {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186)
-const { wait } = __nccwpck_require__(1312)
 const pr = __nccwpck_require__(6653)
 
 /**
@@ -8979,8 +8978,6 @@ var dist_node = __nccwpck_require__(5375);
 
 
 
-const octokit = new dist_node.Octokit({ auth: GITHUB_TOKEN })
-
 async function getDiff(owner, repo, pull_number) {
   const response = await octokit.pulls.get({
     owner,
@@ -9043,6 +9040,7 @@ async function pr() {
     const newBaseSha = eventData.before
     const newHeadSha = eventData.after
 
+    const octokit = new dist_node.Octokit({ auth: core.getInput('GITHUB_TOKEN') })
     const response = await octokit.repos.compareCommits({
       headers: {
         accept: 'application/vnd.github.v3.diff'
@@ -9086,8 +9084,7 @@ async function pr() {
   })
   filteredDiff = filteredDiff.filter(file => {
     return includePatterns.some(pattern => {
-      let isMatch = mjs_namespaceObject["default"].minimatch(file.to ?? '', pattern)
-      return isMatch
+      return mjs_namespaceObject["default"].minimatch(file.to ?? '', pattern)
     })
   })
   const comments = await analyzeCode(filteredDiff, prDetails)
@@ -9098,30 +9095,6 @@ async function pr() {
 }
 
 module.exports = { pr }
-
-
-/***/ }),
-
-/***/ 1312:
-/***/ ((module) => {
-
-/**
- * Wait for a number of milliseconds.
- *
- * @param {number} milliseconds The number of milliseconds to wait.
- * @returns {Promise<string>} Resolves with 'done!' after the wait is over.
- */
-async function wait(milliseconds) {
-  return new Promise(resolve => {
-    if (isNaN(milliseconds)) {
-      throw new Error('milliseconds not a number')
-    }
-
-    setTimeout(() => resolve('done!'), milliseconds)
-  })
-}
-
-module.exports = { wait }
 
 
 /***/ }),
