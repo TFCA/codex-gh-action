@@ -38,28 +38,28 @@ need to perform some initial setup steps before you can develop your action.
 
 1. :hammer_and_wrench: Install the dependencies
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 1. :building_construction: Package the JavaScript for distribution
 
-   ```bash
-   npm run bundle
-   ```
+    ```bash
+    npm run bundle
+    ```
 
 1. :white_check_mark: Run the tests
 
-   ```bash
-   $ npm test
+    ```bash
+    $ npm test
 
-   PASS  ./index.test.js
-     ✓ throws invalid number (3ms)
-     ✓ wait 500 ms (504ms)
-     ✓ test runs (95ms)
+    PASS  ./index.test.js
+      ✓ throws invalid number (3ms)
+      ✓ wait 500 ms (504ms)
+      ✓ test runs (95ms)
 
-   ...
-   ```
+    ...
+    ```
 
 ## Update the Action Metadata
 
@@ -78,62 +78,63 @@ contents of this directory with your own code.
 
 There are a few things to keep in mind when writing your action code:
 
-- Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
-  In `main.js`, you will see that the action is run in an `async` function.
+-   Most GitHub Actions toolkit and CI/CD operations are processed
+    asynchronously. In `main.js`, you will see that the action is run in an
+    `async` function.
 
-  ```javascript
-  const core = require('@actions/core')
-  //...
+    ```javascript
+    const core = require('@actions/core')
+    //...
 
-  async function run() {
-    try {
-      //...
-    } catch (error) {
-      core.setFailed(error.message)
+    async function run() {
+        try {
+            //...
+        } catch (error) {
+            core.setFailed(error.message)
+        }
     }
-  }
-  ```
+    ```
 
-  For more information about the GitHub Actions toolkit, see the
-  [documentation](https://github.com/actions/toolkit/blob/master/README.md).
+    For more information about the GitHub Actions toolkit, see the
+    [documentation](https://github.com/actions/toolkit/blob/master/README.md).
 
 So, what are you waiting for? Go ahead and start customizing your action!
 
 1. Create a new branch
 
-   ```bash
-   git checkout -b releases/v1
-   ```
+    ```bash
+    git checkout -b releases/v1
+    ```
 
 1. Replace the contents of `src/` with your action code
 1. Add tests to `__tests__/` for your source code
 1. Format, test, and build the action
 
-   ```bash
-   npm run all
-   ```
+    ```bash
+    npm run all
+    ```
 
-   > [!WARNING]
-   >
-   > This step is important! It will run [`ncc`](https://github.com/vercel/ncc)
-   > to build the final JavaScript action code with all dependencies included.
-   > If you do not run this step, your action will not work correctly when it is
-   > used in a workflow. This step also includes the `--license` option for
-   > `ncc`, which will create a license file for all of the production node
-   > modules used in your project.
+    > [!WARNING]
+    >
+    > This step is important! It will run [`ncc`](https://github.com/vercel/ncc)
+    > to build the final JavaScript action code with all dependencies included.
+    > If you do not run this step, your action will not work correctly when it
+    > is used in a workflow. This step also includes the `--license` option for
+    > `ncc`, which will create a license file for all of the production node
+    > modules used in your project.
 
 1. Commit your changes
 
-   ```bash
-   git add .
-   git commit -m "My first action is ready!"
-   ```
+    ```bash
+    git add .
+    git commit -m "My first action is ready!"
+    ```
 
 1. Push them to your repository
 
-   ```bash
-   git push -u origin releases/v1
-   ```
+    ```bash
+    git push -u origin releases/v1
+    ```
 
 1. Create a pull request and get feedback on your action
 1. Merge the pull request into the `main` branch
@@ -152,19 +153,19 @@ action in the same repository.
 
 ```yaml
 steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v3
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v3
 
-  - name: Test Local Action
-    id: test-action
-    uses: ./
-    with:
-      milliseconds: 1000
+    - name: Test Local Action
+      id: test-action
+      uses: ./
+      with:
+          milliseconds: 1000
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+    - name: Print Output
+      id: output
+      run: echo "${{ steps.test-action.outputs.time }}"
 ```
 
 For example workflow runs, check out the
@@ -183,17 +184,17 @@ hash.
 
 ```yaml
 steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v4
 
-  - name: Run my Action
-    id: run-action
-    uses: actions/javascript-action@v1 # Commit with the `v1` tag
-    with:
-      milliseconds: 1000
+    - name: Run my Action
+      id: run-action
+      uses: actions/javascript-action@v1 # Commit with the `v1` tag
+      with:
+          milliseconds: 1000
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.run-action.outputs.time }}"
+    - name: Print Output
+      id: output
+      run: echo "${{ steps.run-action.outputs.time }}"
 ```

@@ -7140,41 +7140,178 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 1713:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+/***/ 9491:
+/***/ ((module) => {
 
-const core = __nccwpck_require__(2186)
-const pr = __nccwpck_require__(6653)
-
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
-async function run() {
-  try {
-    await pr()
-  } catch (error) {
-    core.setFailed(error.message)
-  }
-}
-
-module.exports = {
-  run
-}
-
+"use strict";
+module.exports = require("assert");
 
 /***/ }),
 
-/***/ 6653:
-/***/ ((module, __webpack_exports__, __nccwpck_require__) => {
+/***/ 6113:
+/***/ ((module) => {
 
+"use strict";
+module.exports = require("crypto");
+
+/***/ }),
+
+/***/ 2361:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("events");
+
+/***/ }),
+
+/***/ 7147:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ 3685:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("http");
+
+/***/ }),
+
+/***/ 5687:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("https");
+
+/***/ }),
+
+/***/ 1808:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("net");
+
+/***/ }),
+
+/***/ 2037:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("os");
+
+/***/ }),
+
+/***/ 1017:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 4404:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("tls");
+
+/***/ }),
+
+/***/ 3837:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("util");
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __nccwpck_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		var threw = true;
+/******/ 		try {
+/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __nccwpck_require__);
+/******/ 			threw = false;
+/******/ 		} finally {
+/******/ 			if(threw) delete __webpack_module_cache__[moduleId];
+/******/ 		}
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat */
+/******/ 	
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
 "use strict";
 // ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-
-// NAMESPACE OBJECT: ./node_modules/minimatch/dist/mjs/index.js
-var mjs_namespaceObject = {};
-__nccwpck_require__.r(mjs_namespaceObject);
 
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(7147);
@@ -8970,7 +9107,6 @@ var parse_diff_default = /*#__PURE__*/__nccwpck_require__.n(parse_diff);
 // EXTERNAL MODULE: ./node_modules/@octokit/rest/dist-node/index.js
 var dist_node = __nccwpck_require__(5375);
 ;// CONCATENATED MODULE: ./src/pr.js
-/* module decorator */ module = __nccwpck_require__.hmd(module);
 
 
 
@@ -8978,320 +9114,153 @@ var dist_node = __nccwpck_require__(5375);
 
 
 
-async function getDiff(owner, repo, pull_number) {
-  const response = await octokit.pulls.get({
-    owner,
-    repo,
-    pull_number,
-    mediaType: { format: 'diff' }
-  })
-  // @ts-expect-error - response.data is a string
-  return response.data
+async function getDiff(octokit, owner, repo, pull_number) {
+    const response = await octokit.pulls.get({
+        owner,
+        repo,
+        pull_number,
+        mediaType: { format: 'diff' }
+    })
+    // @ts-expect-error - response.data is a string
+    return response.data
 }
 
-async function getPRDetails() {
-  const { repository, number } = JSON.parse(
-    (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH || '', 'utf8')
-  )
-  const prResponse = await octokit.pulls.get({
-    owner: repository.owner.login,
-    repo: repository.name,
-    pull_number: number
-  })
-  return {
-    owner: repository.owner.login,
-    repo: repository.name,
-    pull_number: number,
-    title: prResponse.data.title ?? '',
-    description: prResponse.data.body ?? ''
-  }
+async function getPRDetails(octokit) {
+    const { repository, number } = JSON.parse(
+        (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH || '', 'utf8')
+    )
+    const prResponse = await octokit.pulls.get({
+        owner: repository.owner.login,
+        repo: repository.name,
+        pull_number: number
+    })
+    return {
+        owner: repository.owner.login,
+        repo: repository.name,
+        pull_number: number,
+        title: prResponse.data.title ?? '',
+        description: prResponse.data.body ?? ''
+    }
 }
 
 async function analyzeCode(parsedDiff, prDetails) {
-  const comments = []
+    const comments = []
 
-  for (const file of parsedDiff) {
-    if (file.to === '/dev/null') continue // Ignore deleted files
-    for (const chunk of file.chunks) {
-      comments.push({
-        file: file.to,
-        line: chunk.line,
-        message: chunk.message,
-        content: chunk.content,
-        changes: chunk.changes,
-        title: prDetails.title,
-        author: chunk.author
-      })
+    for (const file of parsedDiff) {
+        if (file.to === '/dev/null') continue // Ignore deleted files
+        for (const chunk of file.chunks) {
+            comments.push({
+                file: file.to,
+                line: chunk.line,
+                message: chunk.message,
+                content: chunk.content,
+                changes: chunk.changes,
+                title: prDetails.title,
+                author: chunk.author
+            })
+        }
     }
-  }
-  return comments
+    return comments
 }
 
 async function pr() {
-  const prDetails = await getPRDetails()
-  let diff = ''
-  const eventData = JSON.parse(
-    (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH ?? '', 'utf8')
-  )
-
-  if (eventData.action === 'opened') {
-    diff = await getDiff(prDetails.owner, prDetails.repo, prDetails.pull_number)
-  } else if (eventData.action === 'synchronize') {
-    const newBaseSha = eventData.before
-    const newHeadSha = eventData.after
-
     const octokit = new dist_node.Octokit({ auth: core.getInput('GITHUB_TOKEN') })
-    const response = await octokit.repos.compareCommits({
-      headers: {
-        accept: 'application/vnd.github.v3.diff'
-      },
-      owner: prDetails.owner,
-      repo: prDetails.repo,
-      base: newBaseSha,
-      head: newHeadSha
+    const prDetails = await getPRDetails(octokit)
+    let diff = ''
+    const eventData = JSON.parse(
+        (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH ?? '', 'utf8')
+    )
+
+    if (eventData.action === 'opened') {
+        diff = await getDiff(
+            octokit,
+            prDetails.owner,
+            prDetails.repo,
+            prDetails.pull_number
+        )
+    } else if (eventData.action === 'synchronize') {
+        const newBaseSha = eventData.before
+        const newHeadSha = eventData.after
+
+        const response = await octokit.repos.compareCommits({
+            headers: {
+                accept: 'application/vnd.github.v3.diff'
+            },
+            owner: prDetails.owner,
+            repo: prDetails.repo,
+            base: newBaseSha,
+            head: newHeadSha
+        })
+
+        diff = String(response.data)
+    } else {
+        core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
+        return
+    }
+
+    if (!diff) {
+        core.debug('No diff found')
+        return
+    }
+
+    const parsedDiff = parse_diff_default()(diff)
+
+    const excludePatterns = core.getInput('exclude')
+        .split(',')
+        .map(s => s.trim())
+
+    const includePatterns = core.getInput('include')
+        .split(',')
+        .map(s => s.trim())
+    if (includePatterns.length === 0) {
+        includePatterns.push('*')
+    }
+
+    let filteredDiff = parsedDiff.filter(file => {
+        return !excludePatterns.some(pattern => {
+            return minimatch(file.to ?? '', pattern)
+        })
     })
-
-    diff = String(response.data)
-  } else {
-    core.debug('Unsupported event:' + process.env.GITHUB_EVENT_NAME)
-    return
-  }
-
-  if (!diff) {
-    core.debug('No diff found')
-    return
-  }
-
-  const parsedDiff = parse_diff_default()(diff)
-
-  const excludePatterns = core.getInput('exclude')
-    .split(',')
-    .map(s => s.trim())
-
-  const includePatterns = core.getInput('include')
-    .split(',')
-    .map(s => s.trim())
-  if (includePatterns.length === 0) {
-    includePatterns.push('*')
-  }
-
-  let filteredDiff = parsedDiff.filter(file => {
-    return !excludePatterns.some(pattern => {
-      let isMatch = mjs_namespaceObject["default"].minimatch(file.to ?? '', pattern)
-      core.error(file + ',' + file.to + ',' + pattern + ': ' + isMatch)
-      return isMatch
+    filteredDiff = filteredDiff.filter(file => {
+        return includePatterns.some(pattern => {
+            return minimatch(file.to ?? '', pattern)
+        })
     })
-  })
-  filteredDiff = filteredDiff.filter(file => {
-    return includePatterns.some(pattern => {
-      return mjs_namespaceObject["default"].minimatch(file.to ?? '', pattern)
-    })
-  })
-  const comments = await analyzeCode(filteredDiff, prDetails)
-  if (comments.length > 0) {
-    core.setOutput('comments', JSON.stringify(comments))
-    core.setOutput('diff', JSON.stringify(filteredDiff))
-  }
+    const comments = await analyzeCode(filteredDiff, prDetails)
+    if (comments.length > 0) {
+        core.setOutput('comments', JSON.stringify(comments))
+        core.setOutput('diff', JSON.stringify(filteredDiff))
+    }
 }
 
-module.exports = { pr }
+/* harmony default export */ const src_pr = (pr);
+
+;// CONCATENATED MODULE: ./src/main.js
 
 
-/***/ }),
 
-/***/ 9491:
-/***/ ((module) => {
+/**
+ * The main function for the action.
+ * @returns {Promise<void>} Resolves when the action is complete.
+ */
+async function run() {
+    try {
+        await src_pr()
+    } catch (error) {
+        core.setFailed(error.message)
+    }
+}
 
-"use strict";
-module.exports = require("assert");
+/* harmony default export */ const main = (run);
 
-/***/ }),
-
-/***/ 6113:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("crypto");
-
-/***/ }),
-
-/***/ 2361:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("events");
-
-/***/ }),
-
-/***/ 7147:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("fs");
-
-/***/ }),
-
-/***/ 3685:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("http");
-
-/***/ }),
-
-/***/ 5687:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("https");
-
-/***/ }),
-
-/***/ 1808:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("net");
-
-/***/ }),
-
-/***/ 2037:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("os");
-
-/***/ }),
-
-/***/ 1017:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("path");
-
-/***/ }),
-
-/***/ 4404:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("tls");
-
-/***/ }),
-
-/***/ 3837:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("util");
-
-/***/ })
-
-/******/ 	});
-/************************************************************************/
-/******/ 	// The module cache
-/******/ 	var __webpack_module_cache__ = {};
-/******/ 	
-/******/ 	// The require function
-/******/ 	function __nccwpck_require__(moduleId) {
-/******/ 		// Check if module is in cache
-/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
-/******/ 		if (cachedModule !== undefined) {
-/******/ 			return cachedModule.exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			id: moduleId,
-/******/ 			loaded: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/ 	
-/******/ 		// Execute the module function
-/******/ 		var threw = true;
-/******/ 		try {
-/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __nccwpck_require__);
-/******/ 			threw = false;
-/******/ 		} finally {
-/******/ 			if(threw) delete __webpack_module_cache__[moduleId];
-/******/ 		}
-/******/ 	
-/******/ 		// Flag the module as loaded
-/******/ 		module.loaded = true;
-/******/ 	
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/compat */
-/******/ 	
-/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
-/******/ 	
-/************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
-(() => {
+;// CONCATENATED MODULE: ./src/index.js
 /**
  * The entrypoint for the action.
  */
-const { run } = __nccwpck_require__(1713)
 
-run()
+
+
+main()
 
 })();
 
