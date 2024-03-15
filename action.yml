@@ -34,7 +34,7 @@ inputs:
 outputs:
     prompts:
         description: 'Your output description here'
-    diff:
+    comments:
         description: 'Your output description here'
 
 runs:

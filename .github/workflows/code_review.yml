@@ -25,6 +25,6 @@ jobs:
             - name: Debug Prompts
               run: |
                   echo "${{ steps.review.outputs.prompts }}"
-            - name: Debug Diffs
+            - name: Debug Comments
               run: |
-                  echo "${{ steps.review.outputs.diff }}"
+                  echo "${{ steps.review.outputs.comments }}"

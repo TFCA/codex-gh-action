@@ -27165,7 +27165,9 @@ async function pr() {
     const dry_run = core.getInput('dry-run') === 'true'
     const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 
-    if (!dry_run && comments.length > 0) {
+    if (dry_run) {
+        core.setOutput('comments', comments)
+    } else if (comments.length > 0) {
         await createReviewComment(
             octokit,
             prDetails.owner,
