@@ -27165,6 +27165,7 @@ async function pr() {
     const comments = await analyzeCode(filteredDiff, prDetails)
     if (comments.length > 0) {
         await createReviewComment(
+            octokit,
             prDetails.owner,
             prDetails.repo,
             prDetails.pull_number,
