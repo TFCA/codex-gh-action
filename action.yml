@@ -32,7 +32,7 @@ inputs:
 
 # Define your outputs here.
 outputs:
-    comments:
+    prompts:
         description: 'Your output description here'
     diff:
         description: 'Your output description here'

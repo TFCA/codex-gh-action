@@ -9148,23 +9148,48 @@ function testfun() {
 }
 
 async function analyzeCode(parsedDiff, prDetails) {
-    const comments = []
+    const prompts = []
 
     for (const file of parsedDiff) {
         if (file.to === '/dev/null') continue // Ignore deleted files
         for (const chunk of file.chunks) {
-            comments.push({
-                file: file.to,
-                line: chunk.line,
-                message: chunk.message,
-                content: chunk.content,
-                changes: chunk.changes,
-                title: prDetails.title,
-                author: chunk.author
-            })
+            const prompt = createPrompt(file, chunk, prDetails)
+            prompts.push(prompt)
         }
     }
-    return comments
+    return prompts
+}
+
+function createPrompt(file, chunk, prDetails) {
+    return `Your task is to review pull requests. Instructions:
+- Provide the response in following JSON format:  {"reviews": [{"lineNumber":  <line_number>, "reviewComment": "<review comment>"}]}
+- Do not give positive comments or compliments.
+- Provide comments and suggestions ONLY if there is something to improve, otherwise "reviews" should be an empty array.
+- Write the comment in GitHub Markdown format.
+- Use the given description only for the overall context and only comment the code.
+- IMPORTANT: NEVER suggest adding comments to the code.
+
+Review the following code diff in the file "${
+        file.to
+    }" and take the pull request title and description into account when writing the response.
+  
+Pull request title: ${prDetails.title}
+Pull request description:
+
+---
+${prDetails.description}
+---
+
+Git diff to review:
+
+\`\`\`diff
+${chunk.content}
+${chunk.changes
+    // @ts-expect-error - ln and ln2 exists where needed
+    .map(c => `${c.ln ? c.ln : c.ln2} ${c.content}`)
+    .join('\n')}
+\`\`\`
+`
 }
 
 async function pr() {
@@ -9230,11 +9255,9 @@ async function pr() {
             return minimatch(file.to ?? '', pattern)
         })
     })
-    const comments = await analyzeCode(filteredDiff, prDetails)
-    if (comments.length > 0) {
-        core.setOutput('comments', JSON.stringify(comments))
-        core.setOutput('diff', JSON.stringify(filteredDiff))
-    }
+    const prompts = await analyzeCode(filteredDiff, prDetails)
+    core.setOutput('prompts', JSON.stringify(prompts))
+    core.setOutput('diff', JSON.stringify(filteredDiff))
 }
 
 /* harmony default export */ const src_pr = (pr);
