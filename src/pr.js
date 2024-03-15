@@ -38,11 +38,13 @@ async function getPRDetails(octokit) {
 
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
     const comments = []
+    const prompts = []
 
     for (const file of parsedDiff) {
         if (file.to === '/dev/null') continue // Ignore deleted files
         for (const chunk of file.chunks) {
             const prompt = createPrompt(file, chunk, prDetails)
+            prompts.push(prompt)
             let newComments
             if (dry_run) {
                 newComments = createComment(file, chunk, [
@@ -59,7 +61,7 @@ async function analyzeCode(dry_run, parsedDiff, prDetails) {
             }
         }
     }
-    return comments
+    return { comments, prompts }
 }
 
 async function getResponse(prompt) {
@@ -253,10 +255,16 @@ async function pr() {
     })
 
     const dry_run = core.getInput('dry-run') === 'true'
-    const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
+    const { comments, prompts } = await analyzeCode(
+        dry_run,
+        filteredDiff,
+        prDetails
+    )
 
+    core.setOutput('comments', comments)
+    core.setOutput('prompts', prompts)
     if (dry_run) {
-        core.setOutput('comments', comments)
+        // do nothing
     } else if (comments.length > 0) {
         await createReviewComment(
             octokit,
