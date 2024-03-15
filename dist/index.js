@@ -9143,6 +9143,10 @@ async function getPRDetails(octokit) {
     }
 }
 
+function testfun() {
+    return 'Hi'
+}
+
 async function analyzeCode(parsedDiff, prDetails) {
     const comments = []
 

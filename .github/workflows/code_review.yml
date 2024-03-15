@@ -20,8 +20,9 @@ jobs:
                   CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
                   LLM_MODEL: 'gpt-4-1106-preview'
                   exclude: 'yarn.lock,dist/**'
+                  include: 'src/**'
                   dry-run: true
             - name: Debug
               run: |
-                echo "${{ steps.review.outputs.comments }}"
-                echo "${{ steps.review.outputs.diff }}"
+                  echo "${{ steps.review.outputs.comments }}"
+                  echo "${{ steps.review.outputs.diff }}"
