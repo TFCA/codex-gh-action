@@ -168,7 +168,7 @@ function createPrompt(file, chunk, prDetails) {
 - Write the comment in GitHub Markdown format.
 - Use the given description only for the overall context and only comment the code.
 - IMPORTANT: NEVER suggest adding comments to the code.
-- IMPORTANT: NEVER mention that changes may affect the behaviour. This is obivious.
+- IMPORTANT: NEVER mention that changes may affect the behaviour. This is obvious.
 - IMPORTANT: Only provide actionable comments. 
 
 Review the following code diff in the file "${
