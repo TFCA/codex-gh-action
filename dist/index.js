@@ -26948,16 +26948,15 @@ function testfun() {
     return 'Hi'
 }
 
-async function analyzeCode(parsedDiff, prDetails) {
+async function analyzeCode(dry_run, parsedDiff, prDetails) {
     const comments = []
 
     for (const file of parsedDiff) {
         if (file.to === '/dev/null') continue // Ignore deleted files
         for (const chunk of file.chunks) {
             const prompt = createPrompt(file, chunk, prDetails)
-            const dry_run = core.getInput('dry-run')
             let newComments
-            if (dry_run === 'true') {
+            if (dry_run) {
                 newComments = createComment(file, chunk, [
                     'Dry run enabled, not commenting'
                 ])
@@ -27162,8 +27161,11 @@ async function pr() {
             return minimatch(file.to ?? '', pattern)
         })
     })
-    const comments = await analyzeCode(filteredDiff, prDetails)
-    if (comments.length > 0) {
+
+    const dry_run = core.getInput('dry-run') === 'true'
+    const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
+
+    if (!dry_run && comments.length > 0) {
         await createReviewComment(
             octokit,
             prDetails.owner,
