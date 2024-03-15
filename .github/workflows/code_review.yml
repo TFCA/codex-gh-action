@@ -21,7 +21,7 @@ jobs:
                   LLM_MODEL: 'gpt-4-1106-preview'
                   exclude: 'yarn.lock,dist/**'
                   include: 'src/**'
-                  dry-run: true
+                  dry-run: false
             - name: Debug Prompts
               run: |
                   echo "${{ steps.review.outputs.prompts }}"

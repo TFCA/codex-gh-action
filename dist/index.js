@@ -26944,10 +26944,6 @@ async function getPRDetails(octokit) {
     }
 }
 
-function testfun() {
-    return 'Hi'
-}
-
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
     const comments = []
 
