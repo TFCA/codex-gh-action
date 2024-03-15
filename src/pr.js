@@ -149,7 +149,7 @@ async function pr() {
         })
     })
     const prompts = await analyzeCode(filteredDiff, prDetails)
-    core.setOutput('prompts', JSON.stringify(prompts))
+    core.setOutput('prompts', prompts)
     core.setOutput('diff', JSON.stringify(filteredDiff))
 }
 
