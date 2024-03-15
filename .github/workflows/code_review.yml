@@ -22,4 +22,6 @@ jobs:
                   exclude: 'yarn.lock,dist/**'
                   dry-run: true
             - name: Debug
-              run: echo "${{ steps.review.outputs.time }}"
+              run: |
+                echo "${{ steps.review.outputs.comments }}"
+                echo "${{ steps.review.outputs.diff }}"
