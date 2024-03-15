@@ -17,7 +17,7 @@ jobs:
               with:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-                  CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+                  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
                   LLM_MODEL: 'gpt-4-1106-preview'
                   exclude: 'yarn.lock,dist/**'
                   include: 'src/**'

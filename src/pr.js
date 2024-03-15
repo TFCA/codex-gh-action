@@ -1,9 +1,11 @@
 import { readFileSync } from 'fs'
 import * as core from '@actions/core'
 import { minimatch } from 'minimatch'
-
 import parseDiff from 'parse-diff'
 import { Octokit } from '@octokit/rest'
+import OpenAI from 'openai'
+
+import Anthropic from '@anthropic-ai/sdk'
 
 async function getDiff(octokit, owner, repo, pull_number) {
     const response = await octokit.pulls.get({
@@ -39,16 +41,124 @@ function testfun() {
 }
 
 async function analyzeCode(parsedDiff, prDetails) {
-    const prompts = []
+    const comments = []
 
     for (const file of parsedDiff) {
         if (file.to === '/dev/null') continue // Ignore deleted files
         for (const chunk of file.chunks) {
             const prompt = createPrompt(file, chunk, prDetails)
-            prompts.push(prompt)
+            const dry_run = core.getInput('dry-run')
+            let newComments
+            if (dry_run === 'true') {
+                newComments = createComment(
+                    file,
+                    chunk,
+                    'Dry run enabled, not commenting'
+                )
+            } else {
+                const response = await getResponse(prompt)
+                if (response) {
+                    newComments = createComment(file, chunk, response)
+                }
+            }
+            if (newComments) {
+                comments.push(...newComments)
+            }
         }
     }
-    return prompts
+    return comments
+}
+
+async function getResponse(prompt) {
+    const model = core.getInput('LLM_MODEL')
+    if (model.startsWith('claude')) {
+        return getClaudeResponse(model, prompt)
+    } else if (model.startsWith('gpt')) {
+        return getGptResponse(model, prompt)
+    } else {
+        throw new Error(`Unknown model name: ${model}`)
+    }
+}
+
+async function getClaudeResponse(model, prompt) {
+    const anthropic = new Anthropic({
+        apiKey: core.getInput('ANTHROPIC_API_KEY')
+    })
+
+    const msg = await anthropic.messages.create({
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 1024,
+        messages: [{ role: 'assistant', content: prompt }]
+    })
+
+    return JSON.parse(msg.content[0].text).reviews
+}
+
+async function getGptResponse(model, prompt) {
+    const OPENAI_API_KEY = core.getInput('OPENAI_API_KEY')
+
+    const openai = new OpenAI({
+        apiKey: OPENAI_API_KEY
+    })
+
+    const queryConfig = {
+        model,
+        temperature: 0.2,
+        max_tokens: 700,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+    }
+    try {
+        const response = await openai.chat.completions.create({
+            ...queryConfig,
+            // return JSON if the model supports it:
+            ...(model === 'gpt-4-1106-preview'
+                ? { response_format: { type: 'json_object' } }
+                : {}),
+            messages: [
+                {
+                    role: 'system',
+                    content: prompt
+                }
+            ]
+        })
+
+        const res = response.choices[0].message?.content?.trim() || '{}'
+        return JSON.parse(res).reviews
+    } catch (error) {
+        console.error('Error:', error)
+        return null
+    }
+}
+
+function createComment(file, chunk, aiResponses) {
+    return aiResponses.flatMap(aiResponse => {
+        if (!file.to) {
+            return []
+        }
+        return {
+            body: aiResponse.reviewComment,
+            path: file.to,
+            line: Number(aiResponse.lineNumber)
+        }
+    })
+}
+
+async function createReviewComment(
+    octokit,
+    owner,
+    repo,
+    pull_number,
+    comments
+) {
+    await octokit.pulls.createReview({
+        owner,
+        repo,
+        pull_number,
+        comments,
+        event: 'COMMENT'
+    })
 }
 
 function createPrompt(file, chunk, prDetails) {
@@ -148,9 +258,15 @@ async function pr() {
             return minimatch(file.to ?? '', pattern)
         })
     })
-    const prompts = await analyzeCode(filteredDiff, prDetails)
-    core.setOutput('prompts', prompts[0])
-    core.setOutput('diff', JSON.stringify(filteredDiff))
+    const comments = await analyzeCode(filteredDiff, prDetails)
+    if (comments.length > 0) {
+        await createReviewComment(
+            prDetails.owner,
+            prDetails.repo,
+            prDetails.pull_number,
+            comments
+        )
+    }
 }
 
 export default pr

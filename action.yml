@@ -10,8 +10,8 @@ inputs:
     OPENAI_API_KEY:
         description: 'OpenAI API key for GPT.'
         required: false
-    CLAUDE_API_KEY:
-        description: 'Claude API Key.'
+    ANTHROPIC_API_KEY:
+        description: 'Anthropic API Key.'
         required: false
     LLM_MODEL:
         description: 'OpenAI API model.'
