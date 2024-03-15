@@ -83,7 +83,7 @@ async function getClaudeResponse(model, prompt) {
     const msg = await anthropic.messages.create({
         model: 'claude-3-haiku-20240307',
         max_tokens: 1024,
-        messages: [{ role: 'assistant', content: prompt }]
+        messages: [{ role: 'user', content: prompt }]
     })
     core.setOutput('claude-response', msg)
     try {
