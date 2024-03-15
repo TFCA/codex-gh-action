@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Code Reviewer Action'
+description: 'Reviews and comments pull requests using LLMs like Claude or GPT'
+author: 'Squad-C'
 
 # Define your inputs here.
 inputs:

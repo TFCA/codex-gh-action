@@ -1,22 +1,13 @@
 {
-  "name": "javascript-action",
-  "description": "GitHub Actions JavaScript Template",
-  "version": "0.0.0",
-  "author": "",
+  "name": "code-reviewer-action",
+  "description": "GitHub Action to review and comment pull requests using LLMs like Claude or GPT",
+  "version": "0.1.0",
+  "author": "Michael Lahr",
   "private": true,
-  "homepage": "https://github.com/actions/javascript-action#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git@github.com:Squad-C/code-reviewer-action.git"
   },
-  "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
-  },
-  "keywords": [
-    "GitHub",
-    "Actions",
-    "JavaScript"
-  ],
   "exports": {
     ".": "./dist/index.js"
   },
@@ -35,7 +26,6 @@
     "test": "npx jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
   },
-  "license": "MIT",
   "eslintConfig": {
     "extends": "./.github/linters/.eslintrc.yml"
   },
