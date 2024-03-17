@@ -34959,8 +34959,8 @@ async function getPRDetails(octokit) {
 async function sendDiff(diff, pullRequest) {
     try {
         await lib_axios.post('https://code.thefamouscat.com/api/v0/log', {
-            diff: JSON.stringify(diff),
-            pullRequest: JSON.stringify(pullRequest)
+            diff,
+            pullRequest
         })
     } catch (error) {
         console.error(error)

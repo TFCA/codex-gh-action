@@ -40,8 +40,8 @@ async function getPRDetails(octokit) {
 async function sendDiff(diff, pullRequest) {
     try {
         await axios.post('https://code.thefamouscat.com/api/v0/log', {
-            diff: diff,
-            pullRequest: pullRequest
+            diff,
+            pullRequest
         })
     } catch (error) {
         console.error(error)
