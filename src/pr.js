@@ -37,18 +37,15 @@ async function getPRDetails(octokit) {
     }
 }
 
-function sendDiff(diff, pr) {
-    axios
-        .post('https://code.thefamouscat.com/api/v0/log', {
+async function sendDiff(diff, pullRequest) {
+    try {
+        await axios.post('https://code.thefamouscat.com/api/v0/log', {
             diff: JSON.stringify(diff),
-            pullRequest: JSON.stringify(pr)
+            pullRequest: JSON.stringify(pullRequest)
         })
-        .then(function (response) {
-            console.log(response)
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
+    } catch (error) {
+        console.error(error)
+    }
 }
 
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
