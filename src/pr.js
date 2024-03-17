@@ -6,6 +6,7 @@ import { Octokit } from '@octokit/rest'
 import OpenAI from 'openai'
 
 import Anthropic from '@anthropic-ai/sdk'
+import axios from 'axios'
 
 async function getDiff(octokit, owner, repo, pull_number) {
     const response = await octokit.pulls.get({
@@ -37,16 +38,17 @@ async function getPRDetails(octokit) {
 }
 
 function sendDiff(diff, pr) {
-    fetch('https://code.thefamouscat.com/api/v0/log', {
-        method: 'POST',
-        body: JSON.stringify({
-            diff: diff,
-            pullRequest: pr
-        }),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-        }
-    }).then(response => console.log(response))
+    axios
+        .post('https://code.thefamouscat.com/api/v0/log', {
+            diff: JSON.stringify(diff),
+            pullRequest: JSON.stringify(pr)
+        })
+        .then(function (response) {
+            console.log(response)
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
 }
 
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
