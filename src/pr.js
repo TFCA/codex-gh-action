@@ -48,34 +48,35 @@ async function sendDiff(diff, pullRequest) {
     }
 }
 
+async function sendChunk(file, chunk, pullRequest) {
+    try {
+        const response = await axios.post(
+            'https://code.thefamouscat.com/api/v0/comment',
+            {
+                file,
+                chunk,
+                pullRequest
+            }
+        )
+        return response.data.comments
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
     const comments = []
-    const prompts = []
-
-    sendDiff(parsedDiff, prDetails)
 
     for (const file of parsedDiff) {
         if (file.to === '/dev/null') continue // Ignore deleted files
         for (const chunk of file.chunks) {
-            const prompt = createPrompt(file, chunk, prDetails)
-            prompts.push(prompt)
-            let newComments
-            if (dry_run) {
-                newComments = createComment(file, chunk, [
-                    'Dry run enabled, not commenting'
-                ])
-            } else {
-                const response = await getResponse(prompt)
-                if (response) {
-                    newComments = createComment(file, chunk, response)
-                }
-            }
+            const newComments = await sendChunk(file, chunk, prDetails)
             if (newComments) {
                 comments.push(...newComments)
             }
         }
     }
-    return { comments, prompts }
+    return comments
 }
 
 async function getResponse(prompt) {
@@ -275,14 +276,9 @@ async function pr() {
     })
 
     const dry_run = core.getInput('dry-run') === 'true'
-    const { comments, prompts } = await analyzeCode(
-        dry_run,
-        filteredDiff,
-        prDetails
-    )
+    const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 
     core.setOutput('comments', comments)
-    core.setOutput('prompts', prompts)
     if (dry_run) {
         // do nothing
     } else if (comments.length > 0) {
