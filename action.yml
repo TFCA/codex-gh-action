@@ -25,10 +25,6 @@ inputs:
         description: 'Glob patterns to include files from the diff analysis'
         required: false
         default: '**/**'
-    dry-run:
-        description: 'Run the action in dry-run mode.'
-        required: false
-        default: false
 
 # Define your outputs here.
 outputs:

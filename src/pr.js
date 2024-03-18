@@ -166,16 +166,16 @@ async function pr() {
         includePatterns.push('*')
     }
 
-    const _comments = JSON.parse(
-        await axios.post('https://code.thefamouscat.com/api/v0/comment', {
+    const response = await axios.post(
+        'https://code.thefamouscat.com/api/v0/comment',
+        {
             diff,
             prDetails,
             excludePatterns,
             includePatterns
-        })
+        }
     )
-
-    for (const review of _comments) {
+    for (const review of response.data) {
         try {
             await createReviewComment(
                 octokit,
