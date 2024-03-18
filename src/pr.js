@@ -275,17 +275,14 @@ async function pr() {
     const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 
     core.setOutput('comments', comments)
-    if (dry_run) {
-        // do nothing
-    } else if (comments.length > 0) {
-        await createReviewComment(
-            octokit,
-            prDetails.owner,
-            prDetails.repo,
-            prDetails.pull_number,
-            comments
-        )
-    }
+    await createReviewComment(
+        octokit,
+        prDetails.owner,
+        prDetails.repo,
+        prDetails.pull_number,
+        comments
+    )
+    core.setFailed(comments.map(c => c.body).join('\n'))
 }
 
 export default pr
