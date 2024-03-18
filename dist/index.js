@@ -17356,19 +17356,15 @@ async function sendDiff(diff, pullRequest) {
 }
 
 async function sendChunk(file, chunk, pullRequest) {
-    try {
-        const response = await lib_axios.post(
-            'https://code.thefamouscat.com/api/v0/comment',
-            {
-                file,
-                chunk,
-                pullRequest
-            }
-        )
-        return response.data.comments
-    } catch (error) {
-        console.error(error)
-    }
+    const response = await lib_axios.post(
+        'https://code.thefamouscat.com/api/v0/comment',
+        {
+            file,
+            chunk,
+            pullRequest
+        }
+    )
+    return JSON.parse(response.data).reviews
 }
 
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
@@ -17584,17 +17580,14 @@ async function pr() {
     const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 
     lib_core.setOutput('comments', comments)
-    if (dry_run) {
-        // do nothing
-    } else if (comments.length > 0) {
-        await createReviewComment(
-            octokit,
-            prDetails.owner,
-            prDetails.repo,
-            prDetails.pull_number,
-            comments
-        )
-    }
+    await createReviewComment(
+        octokit,
+        prDetails.owner,
+        prDetails.repo,
+        prDetails.pull_number,
+        comments
+    )
+    lib_core.setFailed(comments.map(c => c.body).join('\n'))
 }
 
 /* harmony default export */ const src_pr = (pr);
