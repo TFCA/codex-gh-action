@@ -15393,15 +15393,14 @@ async function pr() {
         })
     )
 
-    for (const comment of _comments) {
-        const comments = [comment]
+    for (const review of _comments) {
         try {
             await createReviewComment(
                 octokit,
                 prDetails.owner,
                 prDetails.repo,
                 prDetails.pull_number,
-                comments
+                review
             )
         } catch (e) {
             core.setFailed(e.error)

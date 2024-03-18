@@ -166,7 +166,6 @@ async function pr() {
         includePatterns.push('*')
     }
 
-    const dry_run = core.getInput('dry-run') === 'true'
     const _comments = JSON.parse(
         await axios.post('https://code.thefamouscat.com/api/v0/comment', {
             diff,
@@ -176,15 +175,14 @@ async function pr() {
         })
     )
 
-    for (const comment of _comments) {
-        const comments = [comment]
+    for (const review of _comments) {
         try {
             await createReviewComment(
                 octokit,
                 prDetails.owner,
                 prDetails.repo,
                 prDetails.pull_number,
-                comments
+                review
             )
         } catch (e) {
             core.setFailed(e.error)
