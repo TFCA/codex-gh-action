@@ -57,7 +57,7 @@ async function sendChunk(file, chunk, pullRequest) {
             pullRequest
         }
     )
-    core.setFailed(response.data)
+    core.setFailed(JSON.parse(response.data).reviews)
     return JSON.parse(response.data).reviews
 }
 
@@ -275,7 +275,7 @@ async function pr() {
     const dry_run = core.getInput('dry-run') === 'true'
     const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 
-    core.setOutput('comments', comments)
+    core.setFailed(comments.map(c => c.body).join('\n'))
     await createReviewComment(
         octokit,
         prDetails.owner,
@@ -283,7 +283,6 @@ async function pr() {
         prDetails.pull_number,
         comments
     )
-    core.setFailed(comments.map(c => c.body).join('\n'))
 }
 
 export default pr
