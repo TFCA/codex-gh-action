@@ -162,9 +162,6 @@ async function pr() {
         .getInput('include')
         .split(',')
         .map(s => s.trim())
-    if (includePatterns.length === 0) {
-        includePatterns.push('*')
-    }
 
     const response = await axios.post(
         'https://code.thefamouscat.com/api/v0/comment',
@@ -185,7 +182,7 @@ async function pr() {
                 review
             )
         } catch (e) {
-            core.setFailed(e.error)
+            core.setFailed(e.toString())
         }
     }
 }
