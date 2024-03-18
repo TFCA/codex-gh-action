@@ -17581,15 +17581,17 @@ async function pr() {
     })
 
     const dry_run = lib_core.getInput('dry-run') === 'true'
-    const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
-
-    await createReviewComment(
-        octokit,
-        prDetails.owner,
-        prDetails.repo,
-        prDetails.pull_number,
-        comments
-    )
+    const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
+    for (const comment of _comments) {
+        const comments = [comment]
+        await createReviewComment(
+            octokit,
+            prDetails.owner,
+            prDetails.repo,
+            prDetails.pull_number,
+            comments
+        )
+    }
 }
 
 /* harmony default export */ const src_pr = (pr);
