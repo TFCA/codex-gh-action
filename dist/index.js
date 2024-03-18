@@ -15393,31 +15393,19 @@ async function pr() {
             includePatterns
         }
     )
-    const log = await lib_axios.post('https://code.thefamouscat.com/api/v0/log', {
-        _comments
-    })
-    try {
-        await createReviewComment(
-            octokit,
-            prDetails.owner,
-            prDetails.repo,
-            prDetails.pull_number,
-            _comments
-        )
-    } catch (Error) {
-        for (const comment of _comments) {
-            const comments = [comment]
-            try {
-                await createReviewComment(
-                    octokit,
-                    prDetails.owner,
-                    prDetails.repo,
-                    prDetails.pull_number,
-                    comments
-                )
-            } catch (e) {
-                core.error(e.error)
-            }
+
+    for (const comment of _comments) {
+        const comments = [comment]
+        try {
+            await createReviewComment(
+                octokit,
+                prDetails.owner,
+                prDetails.repo,
+                prDetails.pull_number,
+                comments
+            )
+        } catch (e) {
+            core.setFailed(e.error)
         }
     }
 }
