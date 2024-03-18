@@ -182,7 +182,7 @@ async function pr() {
                 review['reviews']
             )
         } catch (e) {
-            core.setFailed(`${e}: ${review}`)
+            core.setFailed(`${e}: ${JSON.stringify(review)}`)
         }
     }
 }
