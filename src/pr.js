@@ -167,8 +167,8 @@ async function pr() {
     }
 
     const dry_run = core.getInput('dry-run') === 'true'
-    const response = await axios.post(
-        'https://code.thefamouscat.com/api/v0/log',
+    const _comments = await axios.post(
+        'https://code.thefamouscat.com/api/v0/comment',
         {
             diff,
             prDetails,
@@ -176,33 +176,33 @@ async function pr() {
             includePatterns
         }
     )
-    /*
-const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
-try {
-await createReviewComment(
-octokit,
-prDetails.owner,
-prDetails.repo,
-prDetails.pull_number,
-_comments
-)
-} catch (Error) {
-for (const comment of _comments) {
-const comments = [comment]
-try {
-    await createReviewComment(
-        octokit,
-        prDetails.owner,
-        prDetails.repo,
-        prDetails.pull_number,
-        comments
-    )
-} catch (e) {
-    core.error(e.error)
-}
-}
-}
-*/
+    const log = await axios.post('https://code.thefamouscat.com/api/v0/log', {
+        _comments
+    })
+    try {
+        await createReviewComment(
+            octokit,
+            prDetails.owner,
+            prDetails.repo,
+            prDetails.pull_number,
+            _comments
+        )
+    } catch (Error) {
+        for (const comment of _comments) {
+            const comments = [comment]
+            try {
+                await createReviewComment(
+                    octokit,
+                    prDetails.owner,
+                    prDetails.repo,
+                    prDetails.pull_number,
+                    comments
+                )
+            } catch (e) {
+                core.error(e.error)
+            }
+        }
+    }
 }
 
 export default pr
