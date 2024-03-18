@@ -7251,7 +7251,7 @@ async function pr() {
         return
     }
 
-    lib_core.setFailed(`diff`)
+    lib_core.setFailed(`${diff}`)
     return
     /*
   const excludePatterns = core
