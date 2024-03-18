@@ -67,11 +67,10 @@ async function analyzeCode(dry_run, parsedDiff, prDetails) {
         if (file.to === '/dev/null') continue // Ignore deleted files
         for (const chunk of file.chunks) {
             const prompt = createPrompt(file, chunk, prDetails)
-            const newComments = await getResponse(prompt)
-            core.setCommandEcho(true)
+            //const newComments = await getResponse(prompt)
             //core.setFailed(`${newComments}`)
             //core.setFailed(`${await sendChunk(file, chunk, prDetails)}`)
-            //const newComments = await sendChunk(file, chunk, prDetails)
+            const newComments = await sendChunk(file, chunk, prDetails)
             if (newComments) {
                 comments.push(...newComments)
             }
