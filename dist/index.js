@@ -15172,49 +15172,49 @@ function createInstance(defaultConfig) {
 }
 
 // Create the default instance to be exported
-const axios_axios = createInstance(lib_defaults);
+const axios = createInstance(lib_defaults);
 
 // Expose Axios class to allow class inheritance
-axios_axios.Axios = core_Axios;
+axios.Axios = core_Axios;
 
 // Expose Cancel & CancelToken
-axios_axios.CanceledError = cancel_CanceledError;
-axios_axios.CancelToken = cancel_CancelToken;
-axios_axios.isCancel = isCancel;
-axios_axios.VERSION = VERSION;
-axios_axios.toFormData = helpers_toFormData;
+axios.CanceledError = cancel_CanceledError;
+axios.CancelToken = cancel_CancelToken;
+axios.isCancel = isCancel;
+axios.VERSION = VERSION;
+axios.toFormData = helpers_toFormData;
 
 // Expose AxiosError class
-axios_axios.AxiosError = core_AxiosError;
+axios.AxiosError = core_AxiosError;
 
 // alias for CanceledError for backward compatibility
-axios_axios.Cancel = axios_axios.CanceledError;
+axios.Cancel = axios.CanceledError;
 
 // Expose all/spread
-axios_axios.all = function all(promises) {
+axios.all = function all(promises) {
   return Promise.all(promises);
 };
 
-axios_axios.spread = spread;
+axios.spread = spread;
 
 // Expose isAxiosError
-axios_axios.isAxiosError = isAxiosError;
+axios.isAxiosError = isAxiosError;
 
 // Expose mergeConfig
-axios_axios.mergeConfig = mergeConfig;
+axios.mergeConfig = mergeConfig;
 
-axios_axios.AxiosHeaders = core_AxiosHeaders;
+axios.AxiosHeaders = core_AxiosHeaders;
 
-axios_axios.formToJSON = thing => helpers_formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);
+axios.formToJSON = thing => helpers_formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);
 
-axios_axios.getAdapter = adapters.getAdapter;
+axios.getAdapter = adapters.getAdapter;
 
-axios_axios.HttpStatusCode = helpers_HttpStatusCode;
+axios.HttpStatusCode = helpers_HttpStatusCode;
 
-axios_axios.default = axios_axios;
+axios.default = axios;
 
 // this module should only have a default export
-/* harmony default export */ const lib_axios = (axios_axios);
+/* harmony default export */ const lib_axios = (axios);
 
 ;// CONCATENATED MODULE: ./src/pr.js
 
@@ -15251,37 +15251,6 @@ async function getPRDetails(octokit) {
     }
 }
 
-async function sendChunk(file, chunk, pullRequest) {
-    const response = await axios.post(
-        'https://code.thefamouscat.com/api/v0/comment',
-        {
-            file,
-            chunk,
-            pullRequest
-        }
-    )
-    return response.data.reviews
-}
-
-async function analyzeCode(dry_run, parsedDiff, prDetails) {
-    const comments = []
-
-    for (const file of parsedDiff) {
-        if (file.to === '/dev/null') continue // Ignore deleted files
-        for (const chunk of file.chunks) {
-            const prompt = createPrompt(file, chunk, prDetails)
-            //const newComments = await getResponse(prompt)
-            //core.setFailed(`${newComments}`)
-            //core.setFailed(`${await sendChunk(file, chunk, prDetails)}`)
-            const newComments = await sendChunk(file, chunk, prDetails)
-            if (newComments) {
-                comments.push(...newComments)
-            }
-        }
-    }
-    return comments
-}
-
 async function createReviewComment(
     octokit,
     owner,
@@ -15296,40 +15265,6 @@ async function createReviewComment(
         comments,
         event: 'COMMENT'
     })
-}
-
-function createPrompt(file, chunk, prDetails) {
-    return `Your task is to review pull requests. Instructions:
-- Provide the response in following JSON format:  {"reviews": [{"lineNumber":  <line_number>, "reviewComment": "<review comment>"}]}
-- Do not give positive comments or compliments.
-- Provide comments and suggestions ONLY if there is something to improve, otherwise "reviews" should be an empty array.
-- Write the comment in GitHub Markdown format.
-- Use the given description only for the overall context and only comment the code.
-- IMPORTANT: NEVER suggest adding comments to the code.
-- IMPORTANT: NEVER mention that changes may affect the behaviour. This is obvious.
-- IMPORTANT: Only provide actionable comments. 
-
-Review the following code diff in the file "${
-        file.to
-    }" and take the pull request title and description into account when writing the response.
-  
-Pull request title: ${prDetails.title}
-Pull request description:
-
----
-${prDetails.description}
----
-
-Git diff to review:
-
-\`\`\`diff
-${chunk.content}
-${chunk.changes
-    // @ts-expect-error - ln and ln2 exists where needed
-    .map(c => `${c.ln ? c.ln : c.ln2} ${c.content}`)
-    .join('\n')}
-\`\`\`
-`
 }
 
 async function pr() {
