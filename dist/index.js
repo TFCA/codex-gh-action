@@ -17364,6 +17364,7 @@ async function sendChunk(file, chunk, pullRequest) {
             pullRequest
         }
     )
+    lib_core.setFailed(response.data)
     return JSON.parse(response.data).reviews
 }
 

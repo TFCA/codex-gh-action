@@ -57,6 +57,7 @@ async function sendChunk(file, chunk, pullRequest) {
             pullRequest
         }
     )
+    core.setFailed(response.data)
     return JSON.parse(response.data).reviews
 }
 
