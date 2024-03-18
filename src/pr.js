@@ -1,7 +1,5 @@
 import { readFileSync } from 'fs'
 import * as core from '@actions/core'
-import { minimatch } from 'minimatch'
-import parseDiff from 'parse-diff'
 import { Octokit } from '@octokit/rest'
 import OpenAI from 'openai'
 
@@ -249,58 +247,60 @@ async function pr() {
         return
     }
 
-    const parsedDiff = parseDiff(diff)
+    core.setFailed(`diff`)
+    return
+    /*
+  const excludePatterns = core
+      .getInput('exclude')
+      .split(',')
+      .map(s => s.trim())
 
-    const excludePatterns = core
-        .getInput('exclude')
-        .split(',')
-        .map(s => s.trim())
+  const includePatterns = core
+      .getInput('include')
+      .split(',')
+      .map(s => s.trim())
+  if (includePatterns.length === 0) {
+      includePatterns.push('*')
+  }
 
-    const includePatterns = core
-        .getInput('include')
-        .split(',')
-        .map(s => s.trim())
-    if (includePatterns.length === 0) {
-        includePatterns.push('*')
-    }
+  let filteredDiff = parsedDiff.filter(file => {
+      return !excludePatterns.some(pattern => {
+          return minimatch(file.to ?? '', pattern)
+      })
+  })
+  filteredDiff = filteredDiff.filter(file => {
+      return includePatterns.some(pattern => {
+          return minimatch(file.to ?? '', pattern)
+      })
+  })
 
-    let filteredDiff = parsedDiff.filter(file => {
-        return !excludePatterns.some(pattern => {
-            return minimatch(file.to ?? '', pattern)
-        })
-    })
-    filteredDiff = filteredDiff.filter(file => {
-        return includePatterns.some(pattern => {
-            return minimatch(file.to ?? '', pattern)
-        })
-    })
-
-    const dry_run = core.getInput('dry-run') === 'true'
-    const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
-    try {
-        await createReviewComment(
-            octokit,
-            prDetails.owner,
-            prDetails.repo,
-            prDetails.pull_number,
-            _comments
-        )
-    } catch (Error) {
-        for (const comment of _comments) {
-            const comments = [comment]
-            try {
-                await createReviewComment(
-                    octokit,
-                    prDetails.owner,
-                    prDetails.repo,
-                    prDetails.pull_number,
-                    comments
-                )
-            } catch (e) {
-                core.error(e.error)
-            }
-        }
-    }
+  const dry_run = core.getInput('dry-run') === 'true'
+  const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
+  try {
+      await createReviewComment(
+          octokit,
+          prDetails.owner,
+          prDetails.repo,
+          prDetails.pull_number,
+          _comments
+      )
+  } catch (Error) {
+      for (const comment of _comments) {
+          const comments = [comment]
+          try {
+              await createReviewComment(
+                  octokit,
+                  prDetails.owner,
+                  prDetails.repo,
+                  prDetails.pull_number,
+                  comments
+              )
+          } catch (e) {
+              core.error(e.error)
+          }
+      }
+  }
+   */
 }
 
 export default pr
