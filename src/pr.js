@@ -1,9 +1,6 @@
 import { readFileSync } from 'fs'
 import * as core from '@actions/core'
 import { Octokit } from '@octokit/rest'
-import OpenAI from 'openai'
-
-import Anthropic from '@anthropic-ai/sdk'
 import axios from 'axios'
 import parseDiff from 'parse-diff'
 
@@ -36,17 +33,6 @@ async function getPRDetails(octokit) {
     }
 }
 
-async function sendDiff(diff, pullRequest) {
-    try {
-        await axios.post('https://code.thefamouscat.com/api/v0/log', {
-            diff,
-            pullRequest
-        })
-    } catch (error) {
-        console.error(error)
-    }
-}
-
 async function sendChunk(file, chunk, pullRequest) {
     const response = await axios.post(
         'https://code.thefamouscat.com/api/v0/comment',
@@ -76,86 +62,6 @@ async function analyzeCode(dry_run, parsedDiff, prDetails) {
         }
     }
     return comments
-}
-
-async function getResponse(prompt) {
-    const model = core.getInput('LLM_MODEL')
-    if (model.startsWith('claude')) {
-        return getClaudeResponse(model, prompt)
-    } else if (model.startsWith('gpt')) {
-        return getGptResponse(model, prompt)
-    } else {
-        throw new Error(`Unknown model name: ${model}`)
-    }
-}
-
-async function getClaudeResponse(model, prompt) {
-    const anthropic = new Anthropic({
-        apiKey: core.getInput('ANTHROPIC_API_KEY')
-    })
-
-    const msg = await anthropic.messages.create({
-        model,
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: prompt }]
-    })
-    core.setOutput('claude-response', msg)
-    try {
-        return JSON.parse(msg.content[0].text).reviews
-    } catch (e) {
-        throw new Error(`${e.message}\n---\n${msg}`)
-    }
-}
-
-async function getGptResponse(model, prompt) {
-    const OPENAI_API_KEY = core.getInput('OPENAI_API_KEY')
-
-    const openai = new OpenAI({
-        apiKey: OPENAI_API_KEY
-    })
-
-    const queryConfig = {
-        model,
-        temperature: 0.2,
-        max_tokens: 700,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0
-    }
-    try {
-        const response = await openai.chat.completions.create({
-            ...queryConfig,
-            // return JSON if the model supports it:
-            ...(model === 'gpt-4-1106-preview'
-                ? { response_format: { type: 'json_object' } }
-                : {}),
-            messages: [
-                {
-                    role: 'system',
-                    content: prompt
-                }
-            ]
-        })
-
-        const res = response.choices[0].message?.content?.trim() || '{}'
-        return JSON.parse(res).reviews
-    } catch (error) {
-        console.error('Error:', error)
-        return null
-    }
-}
-
-function createComment(file, chunk, aiResponses) {
-    return aiResponses.flatMap(aiResponse => {
-        if (!file.to) {
-            return []
-        }
-        return {
-            body: aiResponse.reviewComment,
-            path: file.to,
-            line: Number(aiResponse.lineNumber)
-        }
-    })
 }
 
 async function createReviewComment(
@@ -250,57 +156,55 @@ async function pr() {
 
     core.setFailed(`${diff}`)
     core.setFailed(`${JSON.stringify(parseDiff(diff))}`)
-    return
+
+    const excludePatterns = core
+        .getInput('exclude')
+        .split(',')
+        .map(s => s.trim())
+
+    const includePatterns = core
+        .getInput('include')
+        .split(',')
+        .map(s => s.trim())
+    if (includePatterns.length === 0) {
+        includePatterns.push('*')
+    }
+
+    const dry_run = core.getInput('dry-run') === 'true'
+    const response = await axios.post(
+        'https://code.thefamouscat.com/api/v0/log',
+        {
+            diff,
+            prDetails,
+            excludePatterns,
+            includePatterns
+        }
+    )
     /*
-const excludePatterns = core
-  .getInput('exclude')
-  .split(',')
-  .map(s => s.trim())
-
-const includePatterns = core
-  .getInput('include')
-  .split(',')
-  .map(s => s.trim())
-if (includePatterns.length === 0) {
-  includePatterns.push('*')
-}
-
-let filteredDiff = parsedDiff.filter(file => {
-  return !excludePatterns.some(pattern => {
-      return minimatch(file.to ?? '', pattern)
-  })
-})
-filteredDiff = filteredDiff.filter(file => {
-  return includePatterns.some(pattern => {
-      return minimatch(file.to ?? '', pattern)
-  })
-})
-
-const dry_run = core.getInput('dry-run') === 'true'
 const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 try {
-  await createReviewComment(
-      octokit,
-      prDetails.owner,
-      prDetails.repo,
-      prDetails.pull_number,
-      _comments
-  )
+await createReviewComment(
+  octokit,
+  prDetails.owner,
+  prDetails.repo,
+  prDetails.pull_number,
+  _comments
+)
 } catch (Error) {
-  for (const comment of _comments) {
-      const comments = [comment]
-      try {
-          await createReviewComment(
-              octokit,
-              prDetails.owner,
-              prDetails.repo,
-              prDetails.pull_number,
-              comments
-          )
-      } catch (e) {
-          core.error(e.error)
-      }
+for (const comment of _comments) {
+  const comments = [comment]
+  try {
+      await createReviewComment(
+          octokit,
+          prDetails.owner,
+          prDetails.repo,
+          prDetails.pull_number,
+          comments
+      )
+  } catch (e) {
+      core.error(e.error)
   }
+}
 }
 */
 }
