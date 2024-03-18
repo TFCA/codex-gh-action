@@ -15396,7 +15396,7 @@ async function pr() {
                 prDetails.owner,
                 prDetails.repo,
                 prDetails.pull_number,
-                review
+                review['reviews']
             )
         } catch (e) {
             core.setFailed(e.toString())
