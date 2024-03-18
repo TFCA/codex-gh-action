@@ -57,7 +57,7 @@ async function sendChunk(file, chunk, pullRequest) {
             pullRequest
         }
     )
-    JSON.parse(response.data).reviews
+    return JSON.parse(response.data).reviews
 }
 
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
