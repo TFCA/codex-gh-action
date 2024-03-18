@@ -17364,7 +17364,7 @@ async function sendChunk(file, chunk, pullRequest) {
             pullRequest
         }
     )
-    lib_core.setFailed(response.data)
+    lib_core.setFailed(JSON.parse(response.data).reviews)
     return JSON.parse(response.data).reviews
 }
 
@@ -17580,7 +17580,7 @@ async function pr() {
     const dry_run = lib_core.getInput('dry-run') === 'true'
     const comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 
-    lib_core.setOutput('comments', comments)
+    lib_core.setFailed(comments.map(c => c.body).join('\n'))
     await createReviewComment(
         octokit,
         prDetails.owner,
@@ -17588,7 +17588,6 @@ async function pr() {
         prDetails.pull_number,
         comments
     )
-    lib_core.setFailed(comments.map(c => c.body).join('\n'))
 }
 
 /* harmony default export */ const src_pr = (pr);
