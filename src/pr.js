@@ -2,7 +2,6 @@ import { readFileSync } from 'fs'
 import * as core from '@actions/core'
 import { Octokit } from '@octokit/rest'
 import axios from 'axios'
-import parseDiff from 'parse-diff'
 
 async function getDiff(octokit, owner, repo, pull_number) {
     const response = await octokit.pulls.get({
@@ -154,9 +153,6 @@ async function pr() {
         return
     }
 
-    core.setFailed(`${diff}`)
-    core.setFailed(`${JSON.stringify(parseDiff(diff))}`)
-
     const excludePatterns = core
         .getInput('exclude')
         .split(',')
@@ -184,26 +180,26 @@ async function pr() {
 const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 try {
 await createReviewComment(
-  octokit,
-  prDetails.owner,
-  prDetails.repo,
-  prDetails.pull_number,
-  _comments
+octokit,
+prDetails.owner,
+prDetails.repo,
+prDetails.pull_number,
+_comments
 )
 } catch (Error) {
 for (const comment of _comments) {
-  const comments = [comment]
-  try {
-      await createReviewComment(
-          octokit,
-          prDetails.owner,
-          prDetails.repo,
-          prDetails.pull_number,
-          comments
-      )
-  } catch (e) {
-      core.error(e.error)
-  }
+const comments = [comment]
+try {
+    await createReviewComment(
+        octokit,
+        prDetails.owner,
+        prDetails.repo,
+        prDetails.pull_number,
+        comments
+    )
+} catch (e) {
+    core.error(e.error)
+}
 }
 }
 */
