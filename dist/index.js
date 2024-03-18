@@ -15399,7 +15399,7 @@ async function pr() {
                 review['reviews']
             )
         } catch (e) {
-            core.setFailed(e.toString())
+            core.setFailed(`${e}: ${review}`)
         }
     }
 }
