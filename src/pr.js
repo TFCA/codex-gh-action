@@ -58,7 +58,7 @@ async function sendChunk(file, chunk, pullRequest) {
                 pullRequest
             }
         )
-        return response.data.comments
+        return response.data.reviews
     } catch (error) {
         console.error(error)
     }
