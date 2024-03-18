@@ -15384,14 +15384,13 @@ async function pr() {
     }
 
     const dry_run = core.getInput('dry-run') === 'true'
-    const _comments = await lib_axios.post(
-        'https://code.thefamouscat.com/api/v0/comment',
-        {
+    const _comments = JSON.parse(
+        await lib_axios.post('https://code.thefamouscat.com/api/v0/comment', {
             diff,
             prDetails,
             excludePatterns,
             includePatterns
-        }
+        })
     )
 
     for (const comment of _comments) {
