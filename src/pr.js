@@ -57,7 +57,6 @@ async function sendChunk(file, chunk, pullRequest) {
             pullRequest
         }
     )
-    core.setFailed(response.data.reviews)
     return response.data.reviews
 }
 
@@ -70,8 +69,8 @@ async function analyzeCode(dry_run, parsedDiff, prDetails) {
             const prompt = createPrompt(file, chunk, prDetails)
             const newComments = await getResponse(prompt)
             core.setCommandEcho(true)
-            core.setFailed(`${newComments}`)
-            core.setFailed(`${await sendChunk(file, chunk, prDetails)}`)
+            //core.setFailed(`${newComments}`)
+            //core.setFailed(`${await sendChunk(file, chunk, prDetails)}`)
             //const newComments = await sendChunk(file, chunk, prDetails)
             if (newComments) {
                 comments.push(...newComments)
