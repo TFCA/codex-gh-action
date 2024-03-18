@@ -25,6 +25,18 @@ inputs:
         description: 'Glob patterns to include files from the diff analysis'
         required: false
         default: '**/**'
+    review_comments:
+        required: false
+        default: false
+    review_codestyle:
+        required: false
+        default: false
+    review_readability:
+        required: false
+        default: false
+    review_naming:
+        required: false
+        default: false
 
 # Define your outputs here.
 outputs:
