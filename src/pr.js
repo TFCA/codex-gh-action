@@ -49,19 +49,15 @@ async function sendDiff(diff, pullRequest) {
 }
 
 async function sendChunk(file, chunk, pullRequest) {
-    try {
-        const response = await axios.post(
-            'https://code.thefamouscat.com/api/v0/comment',
-            {
-                file,
-                chunk,
-                pullRequest
-            }
-        )
-        return response.data.reviews
-    } catch (error) {
-        console.error(error)
-    }
+    const response = await axios.post(
+        'https://code.thefamouscat.com/api/v0/comment',
+        {
+            file,
+            chunk,
+            pullRequest
+        }
+    )
+    JSON.parse(response.data).reviews
 }
 
 async function analyzeCode(dry_run, parsedDiff, prDetails) {
