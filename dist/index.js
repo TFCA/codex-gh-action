@@ -7294,60 +7294,60 @@ async function pr() {
     }
 
     lib_core.setFailed(`${diff}`)
-    lib_core.setFailed(`${parse_diff_default()(diff)}`)
+    lib_core.setFailed(`${JSON.stringify(parse_diff_default()(diff))}`)
     return
     /*
 const excludePatterns = core
-    .getInput('exclude')
-    .split(',')
-    .map(s => s.trim())
+  .getInput('exclude')
+  .split(',')
+  .map(s => s.trim())
 
 const includePatterns = core
-    .getInput('include')
-    .split(',')
-    .map(s => s.trim())
+  .getInput('include')
+  .split(',')
+  .map(s => s.trim())
 if (includePatterns.length === 0) {
-    includePatterns.push('*')
+  includePatterns.push('*')
 }
 
 let filteredDiff = parsedDiff.filter(file => {
-    return !excludePatterns.some(pattern => {
-        return minimatch(file.to ?? '', pattern)
-    })
+  return !excludePatterns.some(pattern => {
+      return minimatch(file.to ?? '', pattern)
+  })
 })
 filteredDiff = filteredDiff.filter(file => {
-    return includePatterns.some(pattern => {
-        return minimatch(file.to ?? '', pattern)
-    })
+  return includePatterns.some(pattern => {
+      return minimatch(file.to ?? '', pattern)
+  })
 })
 
 const dry_run = core.getInput('dry-run') === 'true'
 const _comments = await analyzeCode(dry_run, filteredDiff, prDetails)
 try {
-    await createReviewComment(
-        octokit,
-        prDetails.owner,
-        prDetails.repo,
-        prDetails.pull_number,
-        _comments
-    )
+  await createReviewComment(
+      octokit,
+      prDetails.owner,
+      prDetails.repo,
+      prDetails.pull_number,
+      _comments
+  )
 } catch (Error) {
-    for (const comment of _comments) {
-        const comments = [comment]
-        try {
-            await createReviewComment(
-                octokit,
-                prDetails.owner,
-                prDetails.repo,
-                prDetails.pull_number,
-                comments
-            )
-        } catch (e) {
-            core.error(e.error)
-        }
-    }
+  for (const comment of _comments) {
+      const comments = [comment]
+      try {
+          await createReviewComment(
+              octokit,
+              prDetails.owner,
+              prDetails.repo,
+              prDetails.pull_number,
+              comments
+          )
+      } catch (e) {
+          core.error(e.error)
+      }
+  }
 }
- */
+*/
 }
 
 /* harmony default export */ const src_pr = (pr);
