@@ -1,26 +1,26 @@
 name: Automatic LLM Code Review
 on:
-    pull_request:
-        types:
-            - opened
-            - synchronize
+  pull_request:
+    types:
+      - opened
+      - synchronize
 permissions: write-all
 jobs:
-    code_review:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-            - name: Code Review
-              id: review
-              uses: ./
-              with:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  exclude: 'yarn.lock,dist/**'
-                  include: 'src/**'
-                  api_key: 'wyiIeLXL_GvW053Q3vnLlLGEe8z3Da05'
-                  review_comments: false
-                  review_codestyle: false
-                  review_tests: false
-                  review_naming: true
-                  review_readability: false
+  code_review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Code Review
+        id: review
+        uses: ./
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_KEY: ${{ secrets.CODEX_API_KEY }}
+          exclude: 'yarn.lock,dist/**'
+          include: 'src/**'
+          review_comments: false
+          review_codestyle: false
+          review_tests: false
+          review_naming: true
+          review_readability: false
