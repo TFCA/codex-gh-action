@@ -25,7 +25,8 @@ async function getPRDetails(octokit) {
     })
     return {
         owner: repository.owner.login,
-        repo: repository.name,
+        repository: repository.name,
+        url: repository.url,
         pull_number: number,
         title: prResponse.data.title ?? '',
         description: prResponse.data.body ?? ''
@@ -60,7 +61,7 @@ async function pr() {
         diff = await getDiff(
             octokit,
             prDetails.owner,
-            prDetails.repo,
+            prDetails.repository,
             prDetails.pull_number
         )
     } else if (eventData.action === 'synchronize') {
@@ -72,7 +73,7 @@ async function pr() {
                 accept: 'application/vnd.github.v3.diff'
             },
             owner: prDetails.owner,
-            repo: prDetails.repo,
+            repo: prDetails.repository,
             base: newBaseSha,
             head: newHeadSha
         })
@@ -101,10 +102,10 @@ async function pr() {
     const response = await axios.post(
         'https://code.thefamouscat.com/api/v0/comment',
         {
-            diff,
-            prDetails,
-            excludePatterns,
-            includePatterns
+            git_diff: diff,
+            pull_request: prDetails,
+            exclude_patterns: excludePatterns,
+            include_patterns: includePatterns
         }
     )
     for (const review of response.data) {
@@ -112,7 +113,7 @@ async function pr() {
             await createReviewComment(
                 octokit,
                 prDetails.owner,
-                prDetails.repo,
+                prDetails.repository,
                 prDetails.pull_number,
                 review['reviews']
             )
