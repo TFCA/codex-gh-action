@@ -15316,6 +15316,7 @@ async function pr() {
         .split(',')
         .map(s => s.trim())
 
+    lib_axios.defaults.headers.common["X-API-Key"] = core.getInput('API_KEY')
     const response = await lib_axios.post(
         'https://code.thefamouscat.com/api/v0/comment',
         {
