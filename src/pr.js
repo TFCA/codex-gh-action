@@ -96,7 +96,7 @@ async function pr() {
         diff = String(response.data)
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
-        core.setFailed(eventData)
+        core.setFailed(eventData.action)
         return
     }
 
