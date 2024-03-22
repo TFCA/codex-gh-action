@@ -15325,7 +15325,12 @@ async function pr() {
     } else if ('pusher' in eventData) {
         const newBaseSha = eventData.before
         const newHeadSha = eventData.after
-        if (!newHeadSha || !newBaseSha || newBaseSha === newHeadSha) {
+        if (
+            !newHeadSha ||
+            !newBaseSha ||
+            newBaseSha === newHeadSha ||
+            newBaseSha.startsWith('0000000')
+        ) {
             core.setOutput('info', 'Cannot compare this push')
             return
         }
