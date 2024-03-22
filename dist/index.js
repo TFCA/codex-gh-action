@@ -15298,6 +15298,21 @@ async function pr() {
         })
 
         diff = String(response.data)
+    } else if (eventData.action === 'push') {
+        const newBaseSha = eventData.before
+        const newHeadSha = eventData.after
+
+        const response = await octokit.repos.compareCommits({
+            headers: {
+                accept: 'application/vnd.github.v3.diff'
+            },
+            owner: prDetails.owner,
+            repo: prDetails.repository,
+            base: newBaseSha,
+            head: newHeadSha
+        })
+
+        diff = String(response.data)
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
         core.setFailed(eventData)
