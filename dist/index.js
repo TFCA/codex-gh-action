@@ -15222,6 +15222,7 @@ axios.default = axios;
 
 
 
+
 async function getDiff(octokit, owner, repo, pull_number) {
     const response = await octokit.pulls.get({
         owner,
@@ -15252,6 +15253,17 @@ async function getPRDetails(octokit) {
     }
 }
 
+async function getRepoDetails(octokit) {
+    const { repository, number } = JSON.parse(
+        (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH || '', 'utf8')
+    )
+    return {
+        owner: repository.owner.login,
+        repository: repository.name,
+        url: repository.url
+    }
+}
+
 async function createReviewComment(
     octokit,
     owner,
@@ -15271,12 +15283,17 @@ async function createReviewComment(
 async function pr() {
     const octokit = new dist_node.Octokit({ auth: core.getInput('GITHUB_TOKEN') })
     const prDetails = await getPRDetails(octokit)
+    const repoDetails = await getRepoDetails(octokit)
     let diff = ''
     const eventData = JSON.parse(
         (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH ?? '', 'utf8')
     )
+    let isPR = false
+    const commits = []
+    const pusher = eventData['pusher']
 
     if (eventData.action === 'opened') {
+        isPR = true
         diff = await getDiff(
             octokit,
             prDetails.owner,
@@ -15284,6 +15301,7 @@ async function pr() {
             prDetails.pull_number
         )
     } else if (eventData.action === 'synchronize') {
+        isPR = true
         const newBaseSha = eventData.before
         const newHeadSha = eventData.after
 
@@ -15313,6 +15331,7 @@ async function pr() {
         })
 
         diff = String(response.data)
+        ;(0,core.setFailed)(eventData['commits'])
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
         core.setFailed(eventData)
@@ -15339,20 +15358,25 @@ async function pr() {
             'https://www.codexanalytica.com/api/v0/log',
             {
                 git_diff: diff,
-                pull_request: prDetails,
+                repository: repoDetails,
+                pusher,
+                commits: isPR ? null : commits,
+                pull_request: isPR ? prDetails : null,
                 exclude_patterns: excludePatterns,
                 include_patterns: includePatterns
             }
         )
-        response = await lib_axios.post(
-            'https://www.codexanalytica.com/api/v0/comment',
-            {
-                git_diff: diff,
-                pull_request: prDetails,
-                exclude_patterns: excludePatterns,
-                include_patterns: includePatterns
-            }
-        )
+        /*
+response = await axios.post(
+'https://www.codexanalytica.com/api/v0/comment',
+{
+git_diff: diff,
+pull_request: prDetails,
+exclude_patterns: excludePatterns,
+include_patterns: includePatterns
+}
+)
+*/
     } catch (e) {
         core.setFailed(e)
         return
