@@ -114,9 +114,7 @@ async function pr() {
         diff = String(response.data)
         for (const commit in eventData['commits']) {
             commits.push({
-                id: commit['id'],
-                author: commit['author']['email'],
-                committer: commit['committer']['email']
+                commit
             })
         }
     } else {
@@ -155,6 +153,7 @@ async function pr() {
                 include_patterns: includePatterns
             }
         )
+        /*
         response = await axios.post(
             'https://www.codexanalytica.com/api/v0/comment',
             {
@@ -167,6 +166,7 @@ async function pr() {
                 include_patterns: includePatterns
             }
         )
+         */
     } catch (e) {
         core.setFailed(e)
         return
