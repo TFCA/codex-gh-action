@@ -100,29 +100,38 @@ async function pr() {
         .map(s => s.trim())
 
     axios.defaults.headers.common['X-API-Key'] = core.getInput('API_KEY')
-    const response = axios
-        .post('https://www.codexanalytica.com/api/v0/comment', {
-            git_diff: diff,
-            pull_request: prDetails,
-            exclude_patterns: excludePatterns,
-            include_patterns: includePatterns
-        })
-        .then(response => {
-            for (const review of response.data) {
-                try {
-                    createReviewComment(
-                        octokit,
-                        prDetails.owner,
-                        prDetails.repository,
-                        prDetails.pull_number,
-                        review['reviews']
-                    ).catch(e => core.setFailed(e))
-                } catch (e) {
-                    core.setFailed(`${e}: ${JSON.stringify(review)}`)
-                }
+    let response
+    try {
+        response = await axios.post(
+            'https://www.codexanalytica.com/api/v0/comment',
+            {
+                git_diff: diff,
+                pull_request: prDetails,
+                exclude_patterns: excludePatterns,
+                include_patterns: includePatterns
             }
-        })
-        .catch(e => core.setFailed(e))
+        )
+    } catch (e) {
+        core.setFailed(e)
+        return
+    }
+    try {
+        for (const review of response.data) {
+            try {
+                await createReviewComment(
+                    octokit,
+                    prDetails.owner,
+                    prDetails.repository,
+                    prDetails.pull_number,
+                    review['reviews']
+                )
+            } catch (e) {
+                core.setFailed(`${e}: ${JSON.stringify(review)}`)
+            }
+        }
+    } catch (e) {
+        core.setFailed(e)
+    }
 }
 
 export default pr
