@@ -15326,7 +15326,7 @@ async function pr() {
         const newBaseSha = eventData.before
         const newHeadSha = eventData.after
         if (!newHeadSha || !newBaseSha) {
-            core.setOutput('Cannot compare this push')
+            core.setOutput('push', 'Cannot compare this push')
             return
         }
 
