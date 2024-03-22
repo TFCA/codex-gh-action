@@ -112,7 +112,13 @@ async function pr() {
         })
 
         diff = String(response.data)
-        setFailed(eventData['commits'])
+        for (const commit in eventData['commits']) {
+            commits.push({
+                id: commit['id'],
+                author: commit['author']['email'],
+                committer: commit['committer']['email']
+            })
+        }
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
         core.setFailed(eventData)
@@ -142,24 +148,25 @@ async function pr() {
             {
                 git_diff: diff,
                 repository: repoDetails,
-                pusher,
+                pusher: pusher['email'],
                 commits: isPR ? null : commits,
                 pull_request: isPR ? prDetails : null,
                 exclude_patterns: excludePatterns,
                 include_patterns: includePatterns
             }
         )
-        /*
-response = await axios.post(
-'https://www.codexanalytica.com/api/v0/comment',
-{
-git_diff: diff,
-pull_request: prDetails,
-exclude_patterns: excludePatterns,
-include_patterns: includePatterns
-}
-)
-*/
+        response = await axios.post(
+            'https://www.codexanalytica.com/api/v0/comment',
+            {
+                git_diff: diff,
+                repository: repoDetails,
+                pusher: pusher['email'],
+                commits: isPR ? null : commits,
+                pull_request: isPR ? prDetails : null,
+                exclude_patterns: excludePatterns,
+                include_patterns: includePatterns
+            }
+        )
     } catch (e) {
         core.setFailed(e)
         return
