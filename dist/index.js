@@ -15325,6 +15325,10 @@ async function pr() {
     } else if ('pusher' in eventData) {
         const newBaseSha = eventData.before
         const newHeadSha = eventData.after
+        if (!newHeadSha || !newBaseSha) {
+            core.setOutput('Cannot compare this push')
+            return
+        }
 
         const response = await octokit.repos.compareCommits({
             headers: {
