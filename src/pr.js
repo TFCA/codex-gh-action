@@ -101,7 +101,7 @@ async function pr() {
 
     axios.defaults.headers.common['X-API-Key'] = core.getInput('API_KEY')
     const response = await axios.post(
-        'https://code.thefamouscat.com/api/v0/comment',
+        'https://www.codexanalytica.com/api/v0/comment',
         {
             git_diff: diff,
             pull_request: prDetails,
