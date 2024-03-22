@@ -15300,11 +15300,12 @@ async function pr() {
         diff = String(response.data)
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
+        core.setFailed(eventData)
         return
     }
 
     if (!diff) {
-        core.debug('No diff found')
+        core.setFailed('No diff found')
         return
     }
 
@@ -15332,22 +15333,19 @@ async function pr() {
         core.setFailed(e)
         return
     }
-    try {
-        for (const review of response.data) {
-            try {
-                await createReviewComment(
-                    octokit,
-                    prDetails.owner,
-                    prDetails.repository,
-                    prDetails.pull_number,
-                    review['reviews']
-                )
-            } catch (e) {
-                core.setFailed(`${e}: ${JSON.stringify(review)}`)
-            }
+    for (const review of response.data) {
+        try {
+            await createReviewComment(
+                octokit,
+                prDetails.owner,
+                prDetails.repository,
+                prDetails.pull_number,
+                review['reviews']
+            )
+        } catch (e) {
+            core.setFailed(`${e}: ${JSON.stringify(review)}`)
+            //TODO log error to api
         }
-    } catch (e) {
-        core.setFailed(e)
     }
 }
 
@@ -15365,7 +15363,7 @@ async function run() {
     try {
         await src_pr()
     } catch (error) {
-        core.setFailed(error.message)
+        core.setFailed(error)
     }
 }
 

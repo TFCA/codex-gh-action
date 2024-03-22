@@ -86,7 +86,7 @@ async function pr() {
     }
 
     if (!diff) {
-        core.debug('No diff found')
+        core.setFailed('No diff found')
         return
     }
 
