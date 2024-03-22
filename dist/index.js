@@ -15336,6 +15336,15 @@ async function pr() {
     let response
     try {
         response = await lib_axios.post(
+            'https://www.codexanalytica.com/api/v0/log',
+            {
+                git_diff: diff,
+                pull_request: prDetails,
+                exclude_patterns: excludePatterns,
+                include_patterns: includePatterns
+            }
+        )
+        response = await lib_axios.post(
             'https://www.codexanalytica.com/api/v0/comment',
             {
                 git_diff: diff,
