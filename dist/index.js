@@ -15234,6 +15234,12 @@ async function getDiff(octokit, owner, repo, pull_number) {
     return response.data
 }
 
+function _setFailed(obj) {
+    if (core.getInput('NEVER_FAIL') !== 'true') {
+        (0,core.setFailed)(obj)
+    }
+}
+
 async function getPRDetails(octokit) {
     const { repository, number } = JSON.parse(
         (0,external_fs_.readFileSync)(process.env.GITHUB_EVENT_PATH || '', 'utf8')
@@ -15340,12 +15346,12 @@ async function pr() {
         }
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
-        core.setFailed(eventData)
+        _setFailed(eventData)
         return
     }
 
     if (!diff) {
-        core.setFailed('No diff found')
+        _setFailed('No diff found')
         return
     }
 
@@ -15385,21 +15391,23 @@ async function pr() {
             }
         )
     } catch (e) {
-        core.setFailed(e)
+        _setFailed(e)
         return
     }
-    for (const review of response.data) {
-        try {
-            await createReviewComment(
-                octokit,
-                prDetails.owner,
-                prDetails.repository,
-                prDetails.pull_number,
-                review['reviews']
-            )
-        } catch (e) {
-            core.setFailed(`${e}: ${JSON.stringify(review)}`)
-            //TODO log error to api
+    if (isPR) {
+        for (const review of response.data) {
+            try {
+                await createReviewComment(
+                    octokit,
+                    prDetails.owner,
+                    prDetails.repository,
+                    prDetails.pull_number,
+                    review['reviews']
+                )
+            } catch (e) {
+                _setFailed(`${e}: ${JSON.stringify(review)}`)
+                //TODO log error to api
+            }
         }
     }
 }
@@ -15418,7 +15426,9 @@ async function run() {
     try {
         await src_pr()
     } catch (error) {
-        core.setFailed(error)
+        if (core.getInput('NEVER_FAIL') !== 'true') {
+            core.setFailed(error)
+        }
     }
 }
 

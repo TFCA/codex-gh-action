@@ -32,6 +32,9 @@ inputs:
     review_tests:
         required: false
         default: false
+    never_fail:
+        required: false
+        default: false
 
 runs:
     using: node20

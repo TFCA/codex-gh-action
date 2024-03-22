@@ -9,7 +9,9 @@ async function run() {
     try {
         await pr()
     } catch (error) {
-        core.setFailed(error)
+        if (core.getInput('NEVER_FAIL') !== 'true') {
+            core.setFailed(error)
+        }
     }
 }
 
