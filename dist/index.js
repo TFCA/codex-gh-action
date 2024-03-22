@@ -15325,20 +15325,27 @@ async function pr() {
     } else if ('pusher' in eventData) {
         const newBaseSha = eventData.before
         const newHeadSha = eventData.after
-        if (!newHeadSha || !newBaseSha) {
+        if (!newHeadSha || !newBaseSha || newBaseSha === newHeadSha) {
             core.setOutput('info', 'Cannot compare this push')
             return
         }
 
-        const response = await octokit.repos.compareCommits({
-            headers: {
-                accept: 'application/vnd.github.v3.diff'
-            },
-            owner: prDetails.owner,
-            repo: prDetails.repository,
-            base: newBaseSha,
-            head: newHeadSha
-        })
+        let response
+
+        try {
+            response = await octokit.repos.compareCommits({
+                headers: {
+                    accept: 'application/vnd.github.v3.diff'
+                },
+                owner: prDetails.owner,
+                repo: prDetails.repository,
+                base: newBaseSha,
+                head: newHeadSha
+            })
+        } catch (e) {
+            _setFailed(`${e}: ${newBaseSha} ${newHeadSha}`)
+            return
+        }
 
         diff = String(response.data)
         for (const i in eventData['commits']) {
