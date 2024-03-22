@@ -79,7 +79,7 @@ async function pr() {
         })
 
         diff = String(response.data)
-    } else if (eventData.action === 'push') {
+    } else if ('pusher' in eventData) {
         const newBaseSha = eventData.before
         const newHeadSha = eventData.after
 
@@ -96,7 +96,7 @@ async function pr() {
         diff = String(response.data)
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
-        core.setFailed(eventData.action)
+        core.setFailed(eventData)
         return
     }
 
