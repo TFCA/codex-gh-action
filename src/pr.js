@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs'
 import * as core from '@actions/core'
+import { setFailed } from '@actions/core'
 import { Octokit } from '@octokit/rest'
 import axios from 'axios'
-import { setFailed } from '@actions/core'
 
 async function getDiff(octokit, owner, repo, pull_number) {
     const response = await octokit.pulls.get({
@@ -129,7 +129,7 @@ async function pr() {
                 head: newHeadSha
             })
         } catch (e) {
-            _setFailed(`${e}: ${newBaseSha} ${newHeadSha}`)
+            _setFailed(`compare-commits - ${e}: ${newBaseSha} ${newHeadSha}`)
             return
         }
 
@@ -143,7 +143,7 @@ async function pr() {
         }
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
-        _setFailed(eventData)
+        _setFailed(`Unsupported event: ${eventData}`)
         return
     }
 
@@ -166,19 +166,7 @@ async function pr() {
     let response
     try {
         response = await axios.post(
-            'https://www.codexanalytica.com/api/v0/log',
-            {
-                git_diff: diff,
-                repository: repoDetails,
-                pusher: pusher['email'],
-                commits: isPR ? null : commits,
-                pull_request: isPR ? prDetails : null,
-                exclude_patterns: excludePatterns,
-                include_patterns: includePatterns
-            }
-        )
-        response = await axios.post(
-            'https://www.codexanalytica.com/api/v0/comment',
+            'https://api.codexanalytica.com/api/v0/log',
             {
                 git_diff: diff,
                 repository: repoDetails,
@@ -190,7 +178,24 @@ async function pr() {
             }
         )
     } catch (e) {
-        _setFailed(e)
+        _setFailed(`log - ${e}`)
+        return
+    }
+    try {
+        response = await axios.post(
+            'https://api.codexanalytica.com/api/v0/comment',
+            {
+                git_diff: diff,
+                repository: repoDetails,
+                pusher: pusher['email'],
+                commits: isPR ? null : commits,
+                pull_request: isPR ? prDetails : null,
+                exclude_patterns: excludePatterns,
+                include_patterns: includePatterns
+            }
+        )
+    } catch (e) {
+        _setFailed(`comment - ${e}`)
         return
     }
     if (isPR) {
@@ -204,7 +209,9 @@ async function pr() {
                     review['reviews']
                 )
             } catch (e) {
-                _setFailed(`${e}: ${JSON.stringify(review)}`)
+                _setFailed(
+                    `create-review-comment - ${e}: ${JSON.stringify(review)}`
+                )
                 //TODO log error to api
             }
         }
