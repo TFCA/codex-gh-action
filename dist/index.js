@@ -15348,7 +15348,7 @@ async function pr() {
                 head: newHeadSha
             })
         } catch (e) {
-            _setFailed(`${e}: ${newBaseSha} ${newHeadSha}`)
+            _setFailed(`compare-commits - ${e}: ${newBaseSha} ${newHeadSha}`)
             return
         }
 
@@ -15362,7 +15362,7 @@ async function pr() {
         }
     } else {
         core.debug(`Unsupported event: ${process.env.GITHUB_EVENT_NAME}`)
-        _setFailed(eventData)
+        _setFailed(`Unsupported event: ${eventData}`)
         return
     }
 
@@ -15383,19 +15383,7 @@ async function pr() {
     let response
     try {
         response = await lib_axios.post(
-            'https://www.codexanalytica.com/api/v0/log',
-            {
-                git_diff: diff,
-                repository: repoDetails,
-                pusher: pusher['email'],
-                commits: isPR ? null : commits,
-                pull_request: isPR ? prDetails : null,
-                exclude_patterns: excludePatterns,
-                include_patterns: includePatterns
-            }
-        )
-        response = await lib_axios.post(
-            'https://www.codexanalytica.com/api/v0/comment',
+            'https://api.codexanalytica.com/api/v0/log',
             {
                 git_diff: diff,
                 repository: repoDetails,
@@ -15407,7 +15395,24 @@ async function pr() {
             }
         )
     } catch (e) {
-        _setFailed(e)
+        _setFailed(`log - ${e}`)
+        return
+    }
+    try {
+        response = await lib_axios.post(
+            'https://api.codexanalytica.com/api/v0/comment',
+            {
+                git_diff: diff,
+                repository: repoDetails,
+                pusher: pusher['email'],
+                commits: isPR ? null : commits,
+                pull_request: isPR ? prDetails : null,
+                exclude_patterns: excludePatterns,
+                include_patterns: includePatterns
+            }
+        )
+    } catch (e) {
+        _setFailed(`comment - ${e}`)
         return
     }
     if (isPR) {
@@ -15421,7 +15426,9 @@ async function pr() {
                     review['reviews']
                 )
             } catch (e) {
-                _setFailed(`${e}: ${JSON.stringify(review)}`)
+                _setFailed(
+                    `create-review-comment - ${e}: ${JSON.stringify(review)}`
+                )
                 //TODO log error to api
             }
         }
