@@ -170,8 +170,8 @@ async function pr() {
     let result
     const payload = {
         git_diff: diff,
-        repository: repoDetails,
         pusher: pusher ? pusher['email'] : null,
+        repository: repoDetails,
         commits: isPR ? null : commits,
         pull_request: isPR ? prDetails : null,
         exclude_patterns: excludePatterns,
@@ -233,7 +233,10 @@ async function pr() {
                         'https://api.codexanalytica.com/api/v0/log',
                         {
                             error: `${e}`,
-                            review
+                            review,
+                            repository: repoDetails,
+                            commits: isPR ? null : commits,
+                            pull_request: isPR ? prDetails : null
                         }
                     )
                 } catch (e2) {
