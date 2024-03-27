@@ -15357,7 +15357,7 @@ async function pr() {
             const commit = eventData['commits'][i]
             commits.push({
                 id: commit['id'],
-                message: `${commit['msg']}`,
+                message: `${commit['message']}`,
                 author: commit['author']['email'],
                 committer: commit['committer']['email']
             })
