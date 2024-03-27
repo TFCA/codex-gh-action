@@ -15445,10 +15445,19 @@ async function pr() {
                     review['reviews']
                 )
             } catch (e) {
-                _setFailed(
-                    `create-review-comment - ${e}: ${JSON.stringify(review)}`
-                )
-                //TODO log error to api
+                try {
+                    const response = await lib_axios.post(
+                        'https://api.codexanalytica.com/api/v0/log',
+                        {
+                            error: `${e}`,
+                            review
+                        }
+                    )
+                } catch (e2) {
+                    _setFailed(
+                        `create-review-comment - ${e}: ${JSON.stringify(review)} ... ${e2}`
+                    )
+                }
             }
         }
     }
