@@ -15357,7 +15357,8 @@ async function pr() {
             commits.push({
                 id: eventData['commits'][i]['id'],
                 author: eventData['commits'][i]['author']['email'],
-                committer: eventData['commits'][i]['committer']['email']
+                committer: eventData['commits'][i]['committer']['email'],
+                message: eventData['commits'][i]['msg']
             })
         }
     } else {
@@ -15380,9 +15381,9 @@ async function pr() {
         .map(s => s.trim())
 
     lib_axios.defaults.headers.common["X-API-Key"] = core.getInput('API_KEY')
-    let response
+    let result
     try {
-        response = await lib_axios.post(
+        const response = await lib_axios.post(
             'https://api.codexanalytica.com/api/v0/log',
             {
                 git_diff: diff,
@@ -15394,12 +15395,13 @@ async function pr() {
                 include_patterns: includePatterns
             }
         )
+        result = response.data
     } catch (e) {
         _setFailed(`log - ${e}`)
         return
     }
     try {
-        response = await lib_axios.post(
+        const response = await lib_axios.post(
             'https://api.codexanalytica.com/api/v0/comment',
             {
                 git_diff: diff,
@@ -15411,12 +15413,33 @@ async function pr() {
                 include_patterns: includePatterns
             }
         )
+        const taskId = response.data['task_id']
+        let task = null
+
+        while (
+            !task ||
+            !task.status ||
+            task.status === 'pending' ||
+            task.status === 'running'
+        ) {
+            try {
+                const r = await lib_axios.get(
+                    `https://api.codexanalytica.com/api/v0/task/${taskId}`
+                )
+                task = r.data
+                await new Promise(resolve => setTimeout(resolve, 1000))
+            } catch (error) {
+                _setFailed(`Error while waiting for task: ${error}`)
+                return
+            }
+        }
+        result = task['result']
     } catch (e) {
         _setFailed(`comment - ${e}`)
         return
     }
     if (isPR) {
-        for (const review of response.data) {
+        for (const review of result) {
             try {
                 await createReviewComment(
                     octokit,
