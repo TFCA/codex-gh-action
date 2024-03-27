@@ -139,8 +139,10 @@ async function pr() {
             commits.push({
                 id: commit['id'],
                 message: `${commit['message']}`,
-                author: commit['author']['email'],
-                committer: commit['committer']['email']
+                author: commit['author'] ? commit['author']['email'] : null,
+                committer: commit['committer']
+                    ? commit['committer']['email']
+                    : null
             })
         }
     } else {
@@ -169,7 +171,7 @@ async function pr() {
     const payload = {
         git_diff: diff,
         repository: repoDetails,
-        pusher: pusher['email'],
+        pusher: pusher ? pusher['email'] : null,
         commits: isPR ? null : commits,
         pull_request: isPR ? prDetails : null,
         exclude_patterns: excludePatterns,
