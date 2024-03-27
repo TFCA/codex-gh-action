@@ -15382,18 +15382,19 @@ async function pr() {
 
     lib_axios.defaults.headers.common["X-API-Key"] = core.getInput('API_KEY')
     let result
+    const payload = {
+        git_diff: diff,
+        repository: repoDetails,
+        pusher: pusher['email'],
+        commits: isPR ? null : commits,
+        pull_request: isPR ? prDetails : null,
+        exclude_patterns: excludePatterns,
+        include_patterns: includePatterns
+    }
     try {
         const response = await lib_axios.post(
             'https://api.codexanalytica.com/api/v0/log',
-            {
-                git_diff: diff,
-                repository: repoDetails,
-                pusher: pusher['email'],
-                commits: isPR ? null : commits,
-                pull_request: isPR ? prDetails : null,
-                exclude_patterns: excludePatterns,
-                include_patterns: includePatterns
-            }
+            payload
         )
         result = response.data
     } catch (e) {
@@ -15403,15 +15404,7 @@ async function pr() {
     try {
         const response = await lib_axios.post(
             'https://api.codexanalytica.com/api/v0/comment',
-            {
-                git_diff: diff,
-                repository: repoDetails,
-                pusher: pusher['email'],
-                commits: isPR ? null : commits,
-                pull_request: isPR ? prDetails : null,
-                exclude_patterns: excludePatterns,
-                include_patterns: includePatterns
-            }
+            payload
         )
         const taskId = response.data['task_id']
         let task = null
@@ -15435,7 +15428,7 @@ async function pr() {
         }
         result = task['result']
     } catch (e) {
-        _setFailed(`comment - ${e}`)
+        _setFailed(`comment - ${e}: ${payload}`)
         return
     }
     if (isPR) {
