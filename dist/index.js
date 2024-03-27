@@ -15354,11 +15354,12 @@ async function pr() {
 
         diff = String(response.data)
         for (const i in eventData['commits']) {
+            const commit = eventData['commits'][i]
             commits.push({
-                id: eventData['commits'][i]['id'],
-                author: eventData['commits'][i]['author']['email'],
-                committer: eventData['commits'][i]['committer']['email'],
-                message: eventData['commits'][i]['msg']
+                id: commit['id'],
+                message: commit['msg'],
+                author: commit['author']['email'],
+                committer: commit['committer']['email']
             })
         }
     } else {
