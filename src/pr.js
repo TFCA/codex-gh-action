@@ -175,7 +175,8 @@ async function pr() {
         commits: isPR ? null : commits,
         pull_request: isPR ? prDetails : null,
         exclude_patterns: excludePatterns,
-        include_patterns: includePatterns
+        include_patterns: includePatterns,
+        config: null
     }
     try {
         const response = await axios.post(
