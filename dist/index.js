@@ -15387,12 +15387,13 @@ async function pr() {
     let result
     const payload = {
         git_diff: diff,
-        pusher: pusher ? pusher['email'] : null,
         repository: repoDetails,
+        pusher: pusher ? pusher['email'] : null,
         commits: isPR ? null : commits,
         pull_request: isPR ? prDetails : null,
         exclude_patterns: excludePatterns,
-        include_patterns: includePatterns
+        include_patterns: includePatterns,
+        config: null
     }
     try {
         const response = await lib_axios.post(
